@@ -1,0 +1,1245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Speeki — Information Security Awareness Training 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://alcdn.msauth.net/browser/2.38.3/js/msal-browser.min.js"></script>
+<style>
+  /* ===== SPEEKI BRAND TOKENS ===== */
+  :root {
+    /* PRIMARY — Speeki Brand Guide */
+    --brand-primary: #00eb7c;
+    --brand-primary-dark: #00d06e;
+    --brand-primary-darker: #00b560;
+    --brand-primary-light: #33ef96;
+    --brand-primary-subtle: rgba(0, 235, 124, 0.08);
+    --brand-primary-muted: rgba(0, 235, 124, 0.18);
+
+    --speeki-navy: #00135d;
+    --speeki-navy-light: #0a2470;
+    --speeki-navy-mid: #1a3480;
+
+    /* NEUTRALS */
+    --navy: #00135d;
+    --navy-deep: #000d42;
+    --navy-mid: #0a2470;
+    --text-primary: #0f1a3a;
+    --text-secondary: #3d4a6b;
+    --text-tertiary: #7a849e;
+    --border: #d8dce8;
+    --bg-surface: #FFFFFF;
+    --bg-page: #f3f4f8;
+    --bg-subtle: #eef0f5;
+
+    /* SEMANTIC */
+    --danger: #e64e5f;
+    --danger-bg: #fef2f4;
+    --warning: #ff9700;
+    --warning-bg: #fff8eb;
+    --info: #2077ff;
+    --info-bg: #eff5ff;
+    --success: #00eb7c;
+    --success-bg: #eefff6;
+
+    /* TYPE — GT Walsheim Pro is proprietary, use Plus Jakarta Sans as web fallback */
+    --font-display: 'Plus Jakarta Sans', system-ui, sans-serif;
+    --font-body: 'Plus Jakarta Sans', system-ui, sans-serif;
+
+    /* RADII */
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 20px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--bg-page);
+    color: var(--text-primary);
+    line-height: 1.65;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ===== PROGRESS ===== */
+  .progress-track {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+    height: 3px; background: var(--speeki-navy);
+  }
+  .progress-fill {
+    height: 100%; background: var(--brand-primary);
+    transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    width: 0%;
+  }
+
+  /* ===== HEADER ===== */
+  .site-header {
+    position: fixed; top: 3px; left: 0; right: 0; z-index: 999;
+    background: var(--speeki-navy); backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(0,235,124,0.15);
+    padding: 12px 28px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .logo-area { display: flex; align-items: center; gap: 10px; }
+  .logo-mark {
+    width: 32px; height: 32px;
+    background: transparent; border-radius: var(--radius-sm);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .logo-mark svg { width: 18px; height: 18px; fill: var(--brand-primary); }
+  .logo-text {
+    font-family: var(--font-body); font-weight: 800; font-size: 17px;
+    color: #ffffff; letter-spacing: -0.03em;
+  }
+  .logo-text .logo-accent { color: var(--brand-primary); }
+  .header-label {
+    font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.5);
+    text-transform: uppercase; letter-spacing: 0.06em;
+  }
+
+  /* ===== LAYOUT ===== */
+  .main { max-width: 780px; margin: 0 auto; padding: 80px 20px 60px; }
+
+  /* ===== SLIDES ===== */
+  .slide { display: none; animation: fadeUp 0.4s ease; }
+  .slide.active { display: block; }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ===== CARD ===== */
+  .card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+  }
+  .card-header {
+    padding: 28px 36px 22px;
+    background: var(--speeki-navy);
+    border-bottom: none;
+    position: relative;
+  }
+  .card-header .ep-num {
+    font-size: 11px; font-weight: 700; color: var(--brand-primary);
+    text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px;
+  }
+  .card-header h2 {
+    font-family: var(--font-display); font-size: 26px; font-weight: 800;
+    color: #ffffff; letter-spacing: -0.02em; line-height: 1.25;
+  }
+  .card-header .header-icon {
+    position: absolute; right: 36px; top: 50%; transform: translateY(-50%);
+    width: 44px; height: 44px; background: rgba(0,235,124,0.12);
+    border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center;
+  }
+  .card-header .header-icon svg { width: 22px; height: 22px; stroke: var(--brand-primary); fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .card-body { padding: 32px 36px 36px; }
+
+  /* ===== CONTENT ===== */
+  .section { margin-bottom: 28px; }
+  .section:last-child { margin-bottom: 0; }
+  .section-label {
+    font-size: 10px; font-weight: 700; color: var(--brand-primary);
+    text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px;
+  }
+  .section h3 {
+    font-family: var(--font-display); font-size: 18px; font-weight: 700;
+    color: var(--text-primary); margin-bottom: 8px;
+  }
+  .section p {
+    font-size: 14.5px; color: var(--text-secondary); line-height: 1.7;
+    margin-bottom: 8px;
+  }
+
+  /* ===== KEY POINTS ===== */
+  .points { display: grid; gap: 8px; margin: 12px 0; }
+  .point {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 12px 14px; background: var(--bg-subtle);
+    border-radius: var(--radius-md); border: 1px solid transparent;
+  }
+  .point-icon {
+    width: 28px; height: 28px; flex-shrink: 0; margin-top: 1px;
+    background: var(--brand-primary); border-radius: var(--radius-sm);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .point-icon svg { width: 14px; height: 14px; stroke: white; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .point-icon.danger { background: var(--danger); }
+  .point-icon.warning { background: var(--warning); }
+  .point-icon.info { background: var(--info); }
+  .point-text { font-size: 13.5px; color: var(--text-secondary); line-height: 1.55; }
+  .point-text strong { color: var(--text-primary); font-weight: 600; }
+
+  /* ===== CALLOUT BOXES ===== */
+  .callout {
+    border-radius: var(--radius-md); padding: 16px 20px; margin: 14px 0;
+    border-left: 3px solid var(--brand-primary);
+    background: var(--brand-primary-subtle);
+  }
+  .callout.danger { border-left-color: var(--danger); background: var(--danger-bg); }
+  .callout.info { border-left-color: var(--info); background: var(--info-bg); }
+  .callout.warning { border-left-color: var(--warning); background: var(--warning-bg); }
+  .callout-title {
+    font-size: 13px; font-weight: 700; color: var(--text-primary);
+    margin-bottom: 4px; display: flex; align-items: center; gap: 6px;
+  }
+  .callout-title svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .callout p { font-size: 13.5px; color: var(--text-secondary); line-height: 1.6; margin: 0; }
+
+  /* ===== TAKEAWAY ===== */
+  .takeaway {
+    background: var(--brand-primary-subtle); border: 1px solid var(--brand-primary-muted);
+    border-radius: var(--radius-md); padding: 18px 22px; margin-top: 24px;
+  }
+  .takeaway-label {
+    font-size: 10px; font-weight: 700; color: var(--brand-primary-darker);
+    text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .takeaway-label svg { width: 13px; height: 13px; stroke: var(--brand-primary-darker); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .takeaway p { font-size: 14px; color: var(--text-primary); line-height: 1.6; margin: 0; }
+
+  /* ===== EPISODE IMAGES ===== */
+  .ep-image {
+    margin: 16px 0; border-radius: var(--radius-md); overflow: hidden;
+    border: 1px solid var(--border); background: var(--bg-subtle);
+  }
+  .ep-image img {
+    width: 100%; height: auto; display: block;
+  }
+  .ep-image-caption {
+    padding: 8px 14px; font-size: 11px; color: var(--text-tertiary);
+    background: var(--bg-subtle); border-top: 1px solid var(--border);
+    font-weight: 500;
+  }
+  .ep-image-placeholder {
+    padding: 32px 20px; text-align: center;
+    background: var(--bg-subtle); border: 2px dashed var(--border);
+    border-radius: var(--radius-md); margin: 16px 0;
+  }
+  .ep-image-placeholder p {
+    font-size: 12px; color: var(--text-tertiary); margin: 0;
+  }
+
+  /* ===== NAVIGATION ===== */
+  .nav {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-top: 20px;
+  }
+  .btn {
+    font-family: var(--font-body); font-size: 13px; font-weight: 600;
+    padding: 10px 22px; border-radius: var(--radius-md); border: none;
+    cursor: pointer; transition: all 0.2s ease;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .btn svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .btn-primary { background: var(--brand-primary); color: var(--speeki-navy); font-weight: 700; }
+  .btn-primary:hover { background: var(--brand-primary-dark); transform: translateY(-1px); box-shadow: 0 3px 10px rgba(0,235,124,0.3); }
+  .btn-ghost { background: var(--bg-subtle); color: var(--text-secondary); }
+  .btn-ghost:hover { background: var(--border); }
+  .btn:disabled { opacity: 0.35; cursor: not-allowed; transform: none !important; box-shadow: none !important; }
+  .nav-counter { font-size: 12px; color: var(--text-tertiary); font-weight: 500; }
+
+  /* ===== COVER ===== */
+  .cover {
+    text-align: center; padding: 56px 40px;
+    background: var(--speeki-navy); border: 1px solid rgba(0,235,124,0.15);
+    border-radius: var(--radius-xl);
+  }
+  .cover-icon {
+    width: 64px; height: 64px; margin: 0 auto 24px;
+    background: rgba(0,235,124,0.12); border-radius: 16px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .cover-icon svg { width: 30px; height: 30px; stroke: var(--brand-primary); fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+  .cover h1 {
+    font-family: var(--font-display); font-size: 34px; font-weight: 800;
+    color: #ffffff; margin-bottom: 10px; line-height: 1.2; letter-spacing: -0.02em;
+  }
+  .cover .sub { font-size: 15px; color: rgba(255,255,255,0.65); margin-bottom: 6px; }
+  .cover .badge {
+    display: inline-block; background: var(--brand-primary);
+    color: var(--speeki-navy); padding: 4px 14px; border-radius: 16px;
+    font-weight: 700; font-size: 12px; margin-bottom: 28px;
+  }
+  .cover .meta { font-size: 12px; color: rgba(255,255,255,0.4); }
+
+  /* ===== REGISTRATION FORM ===== */
+  .reg-form { max-width: 380px; margin: 0 auto; text-align: left; }
+  .reg-form label {
+    display: block; font-size: 12px; font-weight: 600;
+    color: rgba(255,255,255,0.6); margin-bottom: 4px; margin-top: 14px;
+  }
+  .reg-form input {
+    width: 100%; padding: 10px 14px; border: 1px solid rgba(255,255,255,0.15);
+    border-radius: var(--radius-sm); font-family: var(--font-body);
+    font-size: 14px; color: #ffffff; background: rgba(255,255,255,0.08);
+    transition: border-color 0.2s;
+  }
+  .reg-form input::placeholder { color: rgba(255,255,255,0.3); }
+  .reg-form input:focus { outline: none; border-color: var(--brand-primary); background: rgba(255,255,255,0.12); }
+  .reg-form .reg-note {
+    font-size: 11px; color: rgba(255,255,255,0.35); margin-top: 14px;
+    line-height: 1.5; text-align: center;
+  }
+  .reg-error { color: #ff6b7a; font-size: 12px; margin-top: 6px; display: none; }
+
+  /* ===== TOC ===== */
+  .toc-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 20px 0;
+  }
+  .toc-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 14px; background: var(--bg-subtle);
+    border-radius: var(--radius-md); cursor: pointer;
+    border: 1px solid transparent; transition: all 0.2s;
+  }
+  .toc-item:hover { border-color: var(--border); background: white; }
+  .toc-icon {
+    width: 36px; height: 36px; border-radius: var(--radius-sm);
+    background: var(--speeki-navy); display: flex;
+    align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .toc-icon svg { width: 18px; height: 18px; stroke: white; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .toc-label { font-size: 12.5px; font-weight: 600; color: var(--text-primary); line-height: 1.3; }
+  .toc-label span { display: block; font-size: 11px; font-weight: 400; color: var(--text-tertiary); margin-top: 1px; }
+
+  /* ===== QUIZ ===== */
+  .quiz-q { margin-bottom: 28px; }
+  .quiz-q h3 {
+    font-size: 14.5px; font-weight: 600; color: var(--text-primary);
+    margin-bottom: 10px; line-height: 1.5; display: flex; align-items: flex-start; gap: 8px;
+  }
+  .q-num {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-width: 24px; height: 24px; background: var(--speeki-navy);
+    color: white; border-radius: 6px; font-size: 12px; font-weight: 700; flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .q-opts { display: grid; gap: 6px; }
+  .q-opt {
+    display: flex; align-items: center; gap: 10px;
+    padding: 11px 14px; background: var(--bg-subtle);
+    border: 1.5px solid transparent; border-radius: var(--radius-md);
+    cursor: pointer; transition: all 0.15s; font-size: 13.5px;
+    color: var(--text-secondary);
+  }
+  .q-opt:hover { border-color: var(--border); background: white; }
+  .q-opt.selected { border-color: var(--brand-primary); background: var(--brand-primary-subtle); color: var(--text-primary); font-weight: 500; }
+  .q-opt.correct { border-color: var(--success); background: var(--success-bg); }
+  .q-opt.wrong { border-color: var(--danger); background: var(--danger-bg); }
+  .radio {
+    width: 18px; height: 18px; border-radius: 50%;
+    border: 2px solid var(--border); flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+  }
+  .q-opt.selected .radio { border-color: var(--brand-primary); background: var(--brand-primary); }
+  .q-opt.selected .radio::after { content: ''; width: 6px; height: 6px; background: white; border-radius: 50%; }
+  .q-opt.correct .radio { border-color: var(--success); background: var(--success); }
+  .q-opt.correct .radio::after { content: ''; width: 6px; height: 6px; background: white; border-radius: 50%; }
+  .q-opt.wrong .radio { border-color: var(--danger); background: var(--danger); }
+  .q-opt.wrong .radio::after { content: ''; width: 6px; height: 6px; background: white; border-radius: 50%; }
+
+  /* ===== RESULTS ===== */
+  .results { text-align: center; padding: 44px 36px; }
+  .results-score {
+    font-family: var(--font-display); font-size: 56px;
+    color: var(--brand-primary); margin-bottom: 4px;
+  }
+  .results-label { font-size: 14px; color: var(--text-tertiary); margin-bottom: 20px; }
+  .results-badge {
+    display: inline-block; padding: 6px 20px; border-radius: 16px;
+    font-weight: 600; font-size: 13px; margin-bottom: 14px;
+  }
+  .results-badge.pass { background: var(--success-bg); color: var(--success); }
+  .results-badge.fail { background: var(--danger-bg); color: var(--danger); }
+  .results-msg { font-size: 14px; color: var(--text-secondary); max-width: 440px; margin: 0 auto 24px; line-height: 1.6; }
+  .cert-box {
+    background: var(--bg-subtle); border: 1px solid var(--border);
+    border-radius: var(--radius-md); padding: 20px; text-align: left;
+    margin-top: 20px; font-size: 13px; color: var(--text-secondary); line-height: 1.7;
+  }
+  .cert-box strong { color: var(--text-primary); }
+
+  /* ===== SVG ICON DEFS ===== */
+  .icon-inline { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; vertical-align: middle; }
+
+  /* ===== PRINT ===== */
+  @media print {
+    body { background: white; }
+    .site-header, .progress-track, .nav { display: none !important; }
+    .slide { display: none !important; }
+    .slide[data-slide="9"] { display: block !important; }
+    .main { padding: 20px; max-width: 100%; }
+    .card { border: 2px solid var(--brand-primary); box-shadow: none; border-radius: 12px; }
+    .results { padding: 36px; }
+    .results-score { font-size: 48px; }
+    .cert-box { border: 1px solid #ccc; page-break-inside: avoid; }
+    .btn { display: none !important; }
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 640px) {
+    .main { padding: 72px 14px 40px; }
+    .cover { padding: 36px 20px; }
+    .cover h1 { font-size: 26px; }
+    .card-body { padding: 24px 20px 28px; }
+    .card-header { padding: 20px 20px 18px; }
+    .card-header h2 { font-size: 22px; }
+    .card-header .header-icon { display: none; }
+    .toc-grid { grid-template-columns: 1fr; }
+    .site-header { padding: 10px 14px; }
+    .header-label { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- SVG ICON SPRITE (hidden) -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 7l-10 7L2 7"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></symbol>
+  <symbol id="i-folder" viewBox="0 0 24 24"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></symbol>
+  <symbol id="i-cpu" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></symbol>
+  <symbol id="i-zap" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></symbol>
+  <symbol id="i-arrow-left" viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></symbol>
+  <symbol id="i-arrow-right" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></symbol>
+  <symbol id="i-clipboard" viewBox="0 0 24 24"><path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></symbol>
+  <symbol id="i-key" viewBox="0 0 24 24"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 11-7.778 7.778 5.5 5.5 0 017.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></symbol>
+  <symbol id="i-upload-cloud" viewBox="0 0 24 24"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0018 9h-1.26A8 8 0 103 16.3"/></symbol>
+  <symbol id="i-monitor" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></symbol>
+  <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></symbol>
+  <symbol id="i-file-text" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></symbol>
+  <symbol id="i-message" viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></symbol>
+  <symbol id="i-video" viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></symbol>
+</svg>
+
+<!-- PROGRESS -->
+<div class="progress-track"><div class="progress-fill" id="progressBar"></div></div>
+
+<!-- HEADER -->
+<header class="site-header">
+  <div class="logo-area">
+    <img src="data:image/png;base64,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" alt="Speeki" style="height:28px;width:auto;">
+  </div>
+  <div class="header-label">Security Awareness Training 2026</div>
+</header>
+
+<div class="main">
+
+  <!-- ===== SLIDE 0: COVER + REGISTRATION ===== -->
+  <div class="slide active" data-slide="0">
+    <div class="cover">
+      <div class="cover-icon"><svg><use href="#i-shield"/></svg></div>
+      <h1>Information Security<br>Awareness Training</h1>
+      <p class="sub">Compulsory training for all Speeki employees</p>
+      <div class="badge">2026 Edition — Includes AI Security</div>
+      <p class="meta">ISO 27001 Compliance &middot; ~15 minutes &middot; 10-question quiz</p>
+
+      <div id="authSection" style="margin-top: 32px; text-align: center;">
+        <button class="btn btn-primary" id="signInBtn" onclick="signIn()" style="margin:0 auto;padding:14px 32px;font-size:15px;">
+          <svg width="16" height="16" viewBox="0 0 21 21" fill="none" style="margin-right:6px;"><path d="M0 0h10v10H0z" fill="#f25022"/><path d="M11 0h10v10H11z" fill="#7fba00"/><path d="M0 11h10v10H0z" fill="#00a4ef"/><path d="M11 11h10v10H11z" fill="#ffb900"/></svg>
+          Sign in with Microsoft
+        </button>
+        <div id="authWelcome" style="display:none;margin-top:16px;">
+          <p style="font-size:14px;color:rgba(255,255,255,0.8);margin-bottom:4px;">Welcome, <strong id="authUserName"></strong></p>
+          <p style="font-size:12px;color:rgba(255,255,255,0.45);" id="authUserEmail"></p>
+        </div>
+        <p class="reg-note" style="margin-top:20px;">Your name, email, score, and completion time will be recorded on your certificate for ISO 27001 audit evidence. Upload a screenshot of your completion certificate to Vanta.</p>
+      </div>
+    </div>
+    <div class="nav">
+      <div></div>
+      <div class="nav-counter">Welcome</div>
+      <button class="btn btn-primary" id="beginBtn" onclick="startTraining()" style="display:none;">Begin Training <svg><use href="#i-arrow-right"/></svg></button>
+    </div>
+  </div>
+
+  <!-- ===== SLIDE 1: TABLE OF CONTENTS ===== -->
+  <div class="slide" data-slide="1">
+    <div class="card">
+      <div class="card-header">
+        <div class="ep-num">Overview</div>
+        <h2>What You'll Learn Today</h2>
+      </div>
+      <div class="card-body">
+        <p style="font-size:14px;color:var(--text-secondary);margin-bottom:16px;">This training covers six essential topics to keep you, your colleagues, and Speeki's data safe. Each section takes about 2 minutes to read.</p>
+        <div class="toc-grid">
+          <div class="toc-item" onclick="goTo(2)">
+            <div class="toc-icon"><svg><use href="#i-mail"/></svg></div>
+            <div class="toc-label">1. Phishing & Social Engineering<span>Spot and stop attacks</span></div>
+          </div>
+          <div class="toc-item" onclick="goTo(3)">
+            <div class="toc-icon"><svg><use href="#i-lock"/></svg></div>
+            <div class="toc-label">2. Passwords & Access Control<span>Stronger credentials</span></div>
+          </div>
+          <div class="toc-item" onclick="goTo(4)">
+            <div class="toc-icon"><svg><use href="#i-folder"/></svg></div>
+            <div class="toc-label">3. Data Classification & Handling<span>Protect sensitive info</span></div>
+          </div>
+          <div class="toc-item" onclick="goTo(5)">
+            <div class="toc-icon"><svg><use href="#i-alert"/></svg></div>
+            <div class="toc-label">4. Incident Reporting<span>When and how to report</span></div>
+          </div>
+          <div class="toc-item" onclick="goTo(6)">
+            <div class="toc-icon"><svg><use href="#i-cpu"/></svg></div>
+            <div class="toc-label">5. Safe Use of AI at Work<span>Rules for AI tools</span></div>
+          </div>
+          <div class="toc-item" onclick="goTo(7)">
+            <div class="toc-icon"><svg><use href="#i-zap"/></svg></div>
+            <div class="toc-label">6. AI-Powered Threats<span>New attack methods</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="nav">
+      <button class="btn btn-ghost" onclick="goTo(0)"><svg><use href="#i-arrow-left"/></svg> Back</button>
+      <div class="nav-counter">Overview</div>
+      <button class="btn btn-primary" onclick="goTo(2)">Start Episode 1 <svg><use href="#i-arrow-right"/></svg></button>
+    </div>
+  </div>
+
+  <!-- ===== SLIDE 2: PHISHING ===== -->
+  <div class="slide" data-slide="2">
+    <div class="card">
+      <div class="card-header">
+        <div class="ep-num">Episode 1 of 6</div>
+        <h2>Phishing & Social Engineering</h2>
+        <div class="header-icon"><svg><use href="#i-mail"/></svg></div>
+      </div>
+      <div class="card-body">
+        <div class="section">
+          <div class="section-label">What is it?</div>
+          <p>Phishing is the number one way attackers breach organisations. They send fake emails, Teams messages, or phone calls that look legitimate — tricking you into clicking links, sharing passwords, or transferring money. Social engineering goes further: attackers may impersonate a colleague, vendor, or executive to manipulate you into taking action.</p>
+        </div>
+        <div class="section">
+          <div class="section-label">Red flags to watch for</div>
+          <div class="points">
+            <div class="point">
+              <div class="point-icon"><svg><use href="#i-clock"/></svg></div>
+              <div class="point-text"><strong>Urgency or pressure</strong> — "Act now or your account will be locked!" Legitimate companies rarely create panic.</div>
+            </div>
+            <div class="point">
+              <div class="point-icon"><svg><use href="#i-mail"/></svg></div>
+              <div class="point-text"><strong>Suspicious sender addresses</strong> — Hover over the "From" field in Outlook. Look for misspellings like support@speeki-security.com instead of support@speeki.com.</div>
+            </div>
+            <div class="point">
+              <div class="point-icon"><svg><use href="#i-globe"/></svg></div>
+              <div class="point-text"><strong>Strange links or attachments</strong> — Hover before clicking. If the URL doesn't match what's displayed, don't click it.</div>
+            </div>
+            <div class="point">
+              <div class="point-icon"><svg><use href="#i-message"/></svg></div>
+              <div class="point-text"><strong>Unusual requests</strong> — Asking for passwords, wire transfers, or sensitive data over email or Teams. Always verify through a separate channel.</div>
+            </div>
+          </div>
+        </div>
+        <div class="section">
+          <div class="section-label">Scenario</div>
+          <div class="ep-image">
+            <img src="data:image/png;base64,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" alt="Phishing example: Fake IT Support email in Outlook with Speeki branding and suspicious reset password link pointing to speeki-login.com">
+            <div class="ep-image-caption">Example: A fake IT Support email using Speeki branding. Notice the suspicious URL "speeki-login.com" when hovering over the button.</div>
+          </div>
+          <div class="callout danger">
+            <div class="callout-title"><svg><use href="#i-alert"/></svg> Example Attack</div>
+            <p>You get an email from "IT Support" saying your Microsoft 365 password expires in 1 hour. The link goes to speeki-login.com (not our real domain). The email uses the Speeki logo and looks professional. This is a phishing attempt — always check the actual URL and verify with IT through a separate Teams message or phone call.</p>
+          </div>
+        </div>
+        <div class="takeaway">
+          <div class="takeaway-label"><svg><use href="#i-shield"/></svg> Remember: STOP, VERIFY, REPORT</div>
+          <p><strong>STOP</strong> — Don't click, reply, or download anything suspicious.<br>
+          <strong>VERIFY</strong> — Contact the sender through a separate, trusted channel (Teams direct message, phone call).<br>
+          <strong>REPORT</strong> — Forward the suspicious email to the IT/security team immediately. Better a false alarm than a missed attack.</p>
+        </div>
+      </div>
+    </div>
+    <div class="nav">
+      <button class="btn btn-ghost" onclick="goTo(1)"><svg><use href="#i-arrow-left"/></svg> Back</button>
+      <div class="nav-counter">1 of 6</div>
+      <button class="btn btn-primary" onclick="goTo(3)">Episode 2 <svg><use href="#i-arrow-right"/></svg></button>
+    </div>
+  </div>
+
+  <!-- ===== SLIDE 3: PASSWORDS ===== -->
+  <div class="slide" data-slide="3">
+    <div class="card">
+      <div class="card-header">
+        <div class="ep-num">Episode 2 of 6</div>
+        <h2>Passwords & Access Control</h2>
+        <div class="header-icon"><svg><use href="#i-lock"/></svg></div>
+      </div>
+      <div class="card-body">
+        <div class="section">
+          <div class="section-label">Password requirements at Speeki</div>
+          <div class="ep-image">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJEAAAApCAYAAAA1Qcs7AAAV6UlEQVR4nO1ce3RU1bn/nTlnHpmQBAQJik+QVqDIq7oQSIAgjytyRem9vopdBtDaeosWXFV5P8XK1WtXr+uqKNflvdraWgVdiCImhPDyAaQpD4ECQkAggUxmMjPn/bt/DHs7JzMJCEhtb35rzZpJzt7f3t+3f+fb+3zfN6OgFf8QuGFUEUsnT8LleYXwJyws/9/f4z//+D/K33perfiWMHDgQA4ZMoTDhg3jddddx3OV9+gjv2CcFk8ySZskbZI6+cbzS89Zdiu+gzh58iSb4q233jrrxb62SxfaVpI6HSbppEjkkDRc0iKHD7vp/BCpTz4xqD1xQ/sMedp5GaAVZ4SioiK2a9cOlmVB0zQoigLTNDF27Nizljm4uAiqpsGCCx98sB0bru3Cr/oBx8ak+0qxpuyjs5/0wHa8aFQRLi/uj3DhRUhGGrH7vbVMLFolt8pWEl1AhEIh6LqOUCgE27bhOA4AIBAInLXM7r1+gKShIxAMQzd1+LUgtGAArk34/Bo6dep0doJvvZTh0Teiy/W9EQ+rOOB34AZjuKh9Hq4acyN2bK4m1hxWAMB31rNvxTdGXV0dQqEQXNeFpmkIBoMIBoPQdf2sZa4p+xjBYBCWaSAcCEFhardJmgboA95esfybCbzjWl7x2iR2n/cgLhreG5FL/Diaa6CxvR+xXOLLeC3Uwnx0/F4X2aXVE11AdO7cGbZtQ1VVAIBt29A0Da7rnrXMle+9r+zbd4DXdOmKaDSK/Py2IIBgOISjJ07gN7997vRPaNdqxOAf4NKxg5H/g6tQ7zdRxwS0gAq/64J04NomNH8QPn8AiboEjtcckd1bSXQBUVdXB01LmdwwDASDQQBAOBw+J7ndun5PqagoZ1FREUzdgD8UxNa/VOO+0tKWO17rY3BsCa4Y2Attel+BI5qBXTwB5AagaAEwnkSORbQN5yGaMJDj2miXVBHZsB1496+tZ6K/BfLz8wEAjuMgGAzCdV34fD6Q5/4AVVw8VAGAkcNG8MuaQ/hiz66WPdCwS9hj9s9Q31HB0bADNxCD6SegagBs0LbhC2jwU0GOqSJcr+DI+iqcWLEe+PCIR3YriS4g4vE4HMeR2xlJuaWdL3xYtvqMAozXTp4Ao3M+GtoZSIQsqJYLxzAAl1B9GvJsH3LjhFobx/71m4BVG4GPYlllZ519//792b9/f1x99dVobGyE3+9HmzZtUFNTg23btqG8vPy8REInTJjATp06oU2bNlAUBatXr8a6devOSXbv3r3Zv39/dOnSBYZhICcnB7quY+PGjVi9+swM3BLuuece9ujRQ55jdF1HXV0dXnjhhdPK1jQNqqqCJBRFgaqqSCaT55VEZ4qCwg446Jgw40nAtkHLRY6roE0ojPy4ArvqIBo+24PIH9cAO3Hmdps7dy6j0SgNwyBJOo5D13VJkpZlUdd1kuS+ffu4cOHCrD64T58+rKur8wTTdF3npEmTZPvXXntNyidJ27Zp2zZJMhqNNiu7JUyZMoUHDhzwjGvbNg3DoGVZ8n8vv/zyN5Y9ZswYlpeXe2S7rsvGxkb52TAMbtiwgQMGDGhW/k033STnlUwmPTbI1n7gwIFMJBJyTMdx6DgOy8rKPO1HjBjBE/WpIKZxspE0U+1/PHlSs3PJX3wXBxx6mVfU/Ds7/HUuu+1ZxOt3P83Oyx8kSrt98/21T58+/PLLL1OTOEUgoWTTd8MwpOIbN27MGGzOnDmSOIKAJLly5UoOGjSIx48fl4ZMXxBB1GPHjpEkd+3axV69ep1Wmd69e3Pnzp0kSdM05dzSx7Ysi47jSN10Xefs2bPPyFDvvfeeJIuQbZom4/G4xy7p11esWJFVdlFRkWxrmqZH/2zt169fT8uyGI/HJYHEmLfccovsM2PWTLokTd1KpTwMkhZZVl7RvI4/zOclL05in0+f5PWfLGLP50uJkZef/eFs3bp10tjC+Olkqa+vlwvvuq5ngZoSacmSJfLOd11XGuvgwYM8evSoZ4HFopqmyWg0yqY4ceIE+/Xr16xiffr0YbY0QvriirGEF033Sq+88kqLRvvkk088iy7sIRCLxeQ1y7JoGIYcN9sNNmzYsAzSNeeJli5dmqGTYRiMxWLcuXOnp/0Ts2bSsl3SZYpEFmknTFZWrD89KW6+lOgfOLeT/X333Ufbtj0KiYXfv38/X331VS5btozRaFQuBJkilGma1HWdEydOlJOYP3++XFjRXtd16XmEbNd1aVmW544Uhk0n8N69e5tVUGxfQoYgJUl+9tlnXLt2Ld955x05ntgaYrGY7PPUU09llf/6669nLKLQ+4svvuDmzZtZVlbGvXv3ZniVEydOkCS3bNnikT169GiPDcmvSZ3ebvz48Z5rR44cke0bGhrYt29fT/sFv/41TctJ5cysU0TSHW5el0nkbwXz5s2TRhAL5zgO9+3blzGBgwcPeowl3t99912my0snUPqdLzyZGOfQoUMeWekGFgtuWVbWM9Jzzz3nkSvw6aefcujQoRntly9f7hlDeIRjx45ltB03bpycl+M4su3Ro0c9ZzuBRx55hKSXxMKOd9xxh2xfUlIidU0/bzqO45EZjUblmoh327aZSCQ88gR+Of0JumTKE5lu6mWRlR+suTAkqqys9LhYYeDly5c3a9ymC37rrbd+vT/PmCENI5C+bTU0NHg8FwAMGTKEW7Zs8Rg/feuMxWIZc0lfMLGtRCKRFo22devWrNvJSy+95OlXVlbmmb/Y5qdOndqs/Llz53rIbNs2Lcvipk2bZJ/hw4ezOYg2O3bs8MhJJ1JzDxy/mjeLdrrNXZKWy01r1l4YEi1cuJAkM84ksViMt912W9ZJDBgwgMOHD+fw4cMzrs+fP5+2bUuSpW9jdXV17N27d7OKbd68OYPQYtu7+eabZb/p06dLg6Wf4958880WjTZ58mSSX2+vgqi7d+/29CPJkydPes5+Tb1FNog5NfVI4npJSQlJMh6PZxz8AWDRokVSr6b2W7VqVbPj/2reLLqn5iilWjY3flx2RiTy392XV/5qLMMPFhGlP2RoylC2eWwUA9OGEz+7kTmP3sQ2U2+i9sCNbPPzIezyxDhe/MAQYkBHAoBWXV0NAMjLy0MikUAoFIJpmgiFQvjTn/6EQ4cO8Z133sGyZcuwdetWBQA2bdrUbNxA5IZUVZWhfdu24ff7sXjxYlRVVTXbt7S0FFVVVTIAJ+ajaRrGjRuHlStXAgD69esnI72apoEkXNeFrusYNmwYFUWBbdswDAN+vx9+vx+O4yAnJwemacqIsUC3bt3k5/Hjx9NxHLRr1w6u64IkfD4fPv/8cwwaNIgk4ff7oWkaTNOEqqpwHAeBQEBGnv1+v8zSk0RxcTErKiqUZDIJAFBVFYqSMoOw0dChQzlt2jT4fKmcuLCbpmnYv38/Ro8e3azdVBdQmHpJ1ig+uMrp8+vXfPArNlwagBsK4WJNg6sq0A0DlmMjFAwgqPlhWRZUVUU7nwrbMtDoOAiqGnqZN6N60X9R+93vfqf89Kc/5ZAhQ2QOR2SaAaBjx4546KGH8OCDD+L48eP8wx/+gLfffhtr167NqpRlWTIqKwwljLtkyZIWg1bbt29X1qxZw5EjR6KhoQEFBQWyb9euXWW7wsJCKVdRFFiWhUAggLvvvhv33HOPbCcWhKciw4JMIriXSCQQDoc9aYf+/fvLG0GQCAD69u2LyspKkJTjCQIYhoFAIABFUWSph6Zp0DQNjuNg1KhRqKioQG5uLgBIApumiWAwCJJ444034Pf7AQCRSAQFBQVynmPGjGnJbFCJFHsIKKc+KgrA04QIC+4cSP3SHNRe4kBxTSiKgUAgBJuEbQNAEtBMwDQBxQeoPsC2U7UfmoavEkDu3SNSpSBDhw5VNmzYAAAQdwtJ6LqOYDAIRVGgaRoKCwtRWlqK8vJy7Nmzhz/5yU8y3GUoFIKqqtLQruvC7/fj8OHDLWt0Clu2bIGu6ygoKAAAKIoC13Vl7Q0A9OzZE0CKJMILiLvF5/NJ8riuC8uyAEAukGgDpBKfyWRSkl3MPxgMIhaLQdM0+P1+j8cTxE0kErKMQ9gofRwg5WVUVUVjYyOAVHQ7vexD1BHZto1OnTrBNE0AkBF8kpg0aRJ27tzZIh0UAnBPvb5+w+lqA8I+H9oFQwhDhT9pwheJAyej8EUTUHQTikOoDgEXUFxAgw/Q/EDQD4QCUHP8QEH463qiQYMGKddffz0qKirQ2NgIVVURCoVAErFYTP5PbHvXXHMNli5diqVLvXW8TY1JUhLzTCC2MACIxWIAUkZu27atZwzhKQUhxLthGLAsS/7t9/s9RBT9EokEbNtGTk4Ojh8/LmWLLUh4jWQyKb2S4zjw+XxSZrqeghwiLwakSOI4DjZu3AgAyM3NlWQUhBFbriAcAOmBbNuWN0FLULKcfHgGnuirLX9B4FgCHeoVXO60wVVae1zmK0AnM4xCI4TL7Txc3KiifaOKixMaChN+XBzzoW2ti/yjJtodsxBfv92bO/vss8+U0aNHAwDuuusu/uhHP8Ltt9+OvLw8aWBVVREOh+V+PXHiROzYsYPPPPOMItqklzmoqopgMIjOnTuf1hgAMGLECLiui3g8LscV24TA9u3bMWDAAOkVDMOApmmoqKhAZWUlbNuGz+eDZVnyTGPbNvLy8tDQ0ID8/Hw5/3g8juXLvy7cqqur85A0JycHAHDo0CG89NJLyM3NRW1tLTp06IB4PI7c3FyYpomcnBxEIhHpucTWWVtbK3ONgiiKokgvFAwGJXFd15VEikQiaNu2LZYtW4aqqiq2dJb0wZWHIbGzAdnJ5cGuiPL58++w680DcUWP76HR1BG3DbQNhxGED4auw+fzIycnHzaIeDyOHDWE9uE8RGqOYv+mPwPzzjAfeeedd3Lt2rUywJj+BGJZFhOJhJzuk08+Kf+f/nSRTCY5Z86cM37CEU9Eov+zzz4r+7799tuepx8x1uOPP37Oj7T3339/RvDQsizu2LHjnGWLpzOB9Cj4LbfcIu0qdBZ61dTUtDj23JkzUkFGI/V0Zp2ad0X5BXrE79evH1955RVWVlayvLycH330EW+//fasg0+ZMiUjZSEUFVHUWbNmSQOJayIyHYlEWsyHVVdXy5yU67oeAo4fP172e+ihh7Lm3rZt23Zaow0dOpQjRoxgcXExhwwZkrU9m0CQ6nSyu3fvztGjR3Pw4MEcPHhwRnuRgE23mwAAvPzyy0wmk1IfkUAmyY8//rjZ8RfMn5tijm6lgtWuTdO0ubly04UhUW1trVQkPTZRUlJyWgMLQyQSCRYVFREAZs+ezabeRCAWi7G+vp4TJkzICDZ++umnnkRs+gJmCzaKeabPO5lM8oEHHmjWcCJFIUih6zpra2sz2u/evZuGYciItWVZtCyLr776arOyRdS6KbHHjh0r+4i0R3pSW7QTbaqqqppyWGLatGlZx58+/fFUysMlTdehxdTnNas+ujAkqqmp8bjvaDRK13Wzuu9HHnlEGkBEiUW2XrSZO3eulJVMJmV4P1tJQyQS8YwtPovAp8jpLV68OGMuL7zwghxDyBRkmj17Nnv06CH7jB8/nhUVFSRThG8aERY3gMD999+fdRF1Xeebb76ZETB99NFHZZtEIiEj7Y7jcMmSJbJtcXFxVrnpx4G+ffvSdV1GIhFPRYWY87hx4zJsMe3Rh5liUSpt1qgbpENuKK+8MCSaMmWKZzEExB2yevVqlpWVsbq6ulnDbt261ZM703Xdk4cT7ciUl2m6iMLg6XVFgnQHDhxo1hAnTpzw5JbStwGRVRe6GYbhyUeJ+VRXV2eVX1FRwUQiIbfX9DmLG6jpuS8dojIhXebw4cOlnU3TpG3bUlZ6u3vvvTdDnuM4jMfjPHnyZMZ8Z81+gi4dJvQ4DcdNRa0dsuzD5rdAACj4RQl7vTiR3X/7YwZK+54b4YQLFQqKZF9TiBRDet7McRxPwlMcrNONG4/HWVNT40mtNM3ek8yoEjhdKUhxcbE8nDY0NGTISNeJ9NYYRaPRjEVuil27dkkdRKFdOlGbLrLjOGxsbJTEKC0t9cgvKSnJqne2lMqKFStoGIasZUpH07PfgoVzaNOhRYeRxhTpnYTDjz9q/mDd5t9K2HvDfF62az477p/Lq/Yt4uWV04jZRUQfnB2hNm/enLH4JD1Vjk0Vd12XkydP9gz48MMPM5FIZBwc33//fXbv3l2WSaSXhIjzR/r4+/bta7FKUKBXr17cvXu37Jvu+sWNIA754iYwDCMjX9YcNm7cmLUgT8yzqZ6O49A0TY4ZMyZDvtjOdF3PqFjINnZNTY1HD9GX9HqumTMeY9Ix2JCMfZ3Nt8j165o/WA8tW8yrD/wHUTOTODGDODqDoQMz2XXPQl5X/jgveWIU8cOCb06mxx57jNu3b5eLm35wbfq01FxB1/Tp0zNIF41GPdnsF198kdmQSCRYW1vLp59++htPfurUqdy7dy/Jr7eZ9BCBIFNVVVWGhzgdBg0axA8++CBjvulexTAM1tfXc8GCBS3K3rZtm4dwruvyjTfeyNqnb9++cjtNPyI0rZwcUjyQcStJiw51w2IyrpM2ee+E5vW85N2pDH+5iKH6J+k7OYf4aia1gzPZ5uA8Fh5czCt3P8Xvb1lMPHM7cVvXFnXKGijq1asX+/Xrhy5dusigWzgcRjQaxerVq/HJJ580G2BasGABp0+fLnNIIkC5bt06FBcXe/pNnDiRhYWFMjC5fPlybNmy5ZyK6Xv27MmRI0fKCLfP50M8Hsfhw4fx2muvnXOh/uTJk3nZZZfBsiyZYzx27Bj279+PlStX/v38lMvPrmePX07AcTQgoVlQ/RoQCCCpuLAtC/CpCPtykNvooiBGNFTtR+37lcDr1Rk6nnel58yZwxkzZshUgciob968GUVFRX8/Rv7/gH/qxl4P/wsaLwnCzg3gZMBCPOgAOX4ABJIWCmwVvqQDfyAAtdGC70gUh5/9b+C9ermW5/27+OnfqxLlGiIF0IrvGN7fo1SPWqTsf/b38H9+CF0bAuiYDECJGECjAc2noCEeRUGXjjjOenzVzgWu64TvT70P6K/JLe68k0jkhETiUCRCW0n0HcayHcq+f31e+fPPn4Hy1lb0POZHFzsfoYSC9h064cDe/UBOHvxtCtCYtBHKb4fOgwfK7uf9W3OiPMNxHE8mP73cohXfUaw9rhxb+0ccu3EVff88GN1KbkBDbQOuvvIqHDbi8Jk2lKiDfF8+qnbXyG7nnUSCQOm/uWNZ1jn/aEErLiA2NiruxlX4ovuHDI4oQruSG3DFlR3gyw2jQMlDtOqvwPv7vr0fdFBVVRJInI8CgYDc1lrxd4SdrmLsXIudv1kLTBrI4OWdYNQcA15a/+3+oENtba38nB4TO3jw4PkeqhUXEks3KEYzl867e9ixYwcikYgs+hJE2rlz5/keqhXfEXxrp91hw4ZRHKjLyspaT9X/wPg/rsIIGhFKWL0AAAAASUVORK5CYII=" alt="Password strength comparison: Weak password Speeki2024 vs Strong password BlueTiger$Dances99, with 8-char standard and 12-char admin minimums">
+            <div class="ep-image-caption">Weak vs strong passwords — and the minimum requirements for standard and admin accounts.</div>
+          </div>
+          <p>Strong passwords are your first line of defence. Speeki has different requirements based on your account type:</p>
+          <div class="points" style="margin-top:10px;">
+            <div class="point">
+              <div class="point-icon"><svg><use href="#i-users"/></svg></div>
+              <div class="point-text"><strong>Standard user accounts</strong> — Minimum <strong>8 characters</strong>. This applies to your Microsoft 365 account, cloud applications, and day-to-day logins. Mix letters, numbers, and special characters.</div>
+            </div>
+            <div class="point">
+              <div class="point-icon warning"><svg><use href="#i-key"/></svg></div>
+              <div class="point-text"><strong>Admin and local admin accounts</strong> — Minimum <strong>12 characters</strong>. This applies to local computer admin passwords, server access, or any account with elevated privileges. Use a passphrase like "BlueTiger$Dances99" for easier memorisation.</div>
+            </div>
+          </div>
+        </div>
+        <div class="section">
+          <div class="section-label">Best practices for everyone</div>
+          <div class="points">
+            <div class="point">
+              <div class="point-icon"><svg><use href="#i-key"/></svg></div>
+              <div class="point-text"><strong>Unique per account</strong> — Never reuse passwords. If one service is breached, attackers try your credentials everywhere (this is called credential stuffing).</div>
+            </div>
+            <div class="point">
+              <div class="point-icon"><svg><use href="#i-shield"/></svg></div>
+              <div class="point-text"><strong>Use a password manager</strong> — It generates and stores unique passwords for every account. You only need to remember one master password.</div>
+            </div>
+            <div class="point">
+              <div class="point-icon"><svg><use href="#i-phone"/></svg></div>
+              <div class="point-text"><strong>Enable MFA everywhere</strong> — Multi-factor authentication adds a second layer: your password + a code from Microsoft Authenticator. This is mandatory for all Speeki accounts.</div>
+            </div>
+          </div>
+        </div>
+        <div class="section">
+          <div class="section-label">Access control</div>
+          <div class="callout info">
+            <div class="callout-title"><svg><use href="#i-eye"/></svg> Least Privilege Principle</div>
+            <p>Only request access to the systems and data you actually need for your role. If you change roles or no longer need access to a system, notify IT so permissions can be revoked. Never share your credentials with anyone — including your manager.</p>
+          </div>
+        </div>
+        <div class="takeaway">
+          <div class="takeaway-label"><svg><use href="#i-shield"/></svg> Key Takeaway</div>
+          <p>8-character minimum for standard accounts, 12-character minimum for admin accounts. Use unique passwords, a password manager, and always enable MFA.</p>
+        </div>
+      </div>
+    </div>
+    <div class="nav">
+      <button class="btn btn-ghost" onclick="goTo(2)"><svg><use href="#i-arrow-left"/></svg> Back</button>
+      <div class="nav-counter">2 of 6</div>
+      <button class="btn btn-primary" onclick="goTo(4)">Episode 3 <svg><use href="#i-arrow-right"/></svg></button>
+    </div>
+  </div>
+
+  <!-- ===== SLIDE 4: DATA CLASSIFICATION ===== -->
+  <div class="slide" data-slide="4">
+    <div class="card">
+      <div class="card-header">
+        <div class="ep-num">Episode 3 of 6</div>
+        <h2>Data Classification & Handling</h2>
+        <div class="header-icon"><svg><use href="#i-folder"/></svg></div>
+      </div>
+      <div class="card-body">
+        <div class="section">
+          <div class="section-label">Why it matters</div>
+          <p>Not all data is equal. Treating everything the same puts sensitive information at risk. Speeki classifies data into levels so everyone knows how to handle it properly.</p>
+        </div>
+        <div class="section">
+          <div class="section-label">Classification levels</div>
+          <p>Speeki uses <strong>Microsoft Purview sensitivity labels</strong> to classify all files, emails, and meeting content. These labels are applied automatically or manually and add footers to your documents. There are four levels:</p>
+          <div class="ep-image">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJEAAAApCAYAAAA1Qcs7AAAV6UlEQVR4nO1ce3RU1bn/nTlnHpmQBAQJik+QVqDIq7oQSIAgjytyRem9vopdBtDaeosWXFV5P8XK1WtXr+uqKNflvdraWgVdiCImhPDyAaQpD4ECQkAggUxmMjPn/bt/DHs7JzMJCEhtb35rzZpJzt7f3t+3f+fb+3zfN6OgFf8QuGFUEUsnT8LleYXwJyws/9/f4z//+D/K33perfiWMHDgQA4ZMoTDhg3jddddx3OV9+gjv2CcFk8ySZskbZI6+cbzS89Zdiu+gzh58iSb4q233jrrxb62SxfaVpI6HSbppEjkkDRc0iKHD7vp/BCpTz4xqD1xQ/sMedp5GaAVZ4SioiK2a9cOlmVB0zQoigLTNDF27Nizljm4uAiqpsGCCx98sB0bru3Cr/oBx8ak+0qxpuyjs5/0wHa8aFQRLi/uj3DhRUhGGrH7vbVMLFolt8pWEl1AhEIh6LqOUCgE27bhOA4AIBAInLXM7r1+gKShIxAMQzd1+LUgtGAArk34/Bo6dep0doJvvZTh0Teiy/W9EQ+rOOB34AZjuKh9Hq4acyN2bK4m1hxWAMB31rNvxTdGXV0dQqEQXNeFpmkIBoMIBoPQdf2sZa4p+xjBYBCWaSAcCEFhardJmgboA95esfybCbzjWl7x2iR2n/cgLhreG5FL/Diaa6CxvR+xXOLLeC3Uwnx0/F4X2aXVE11AdO7cGbZtQ1VVAIBt29A0Da7rnrXMle+9r+zbd4DXdOmKaDSK/Py2IIBgOISjJ07gN7997vRPaNdqxOAf4NKxg5H/g6tQ7zdRxwS0gAq/64J04NomNH8QPn8AiboEjtcckd1bSXQBUVdXB01LmdwwDASDQQBAOBw+J7ndun5PqagoZ1FREUzdgD8UxNa/VOO+0tKWO17rY3BsCa4Y2Attel+BI5qBXTwB5AagaAEwnkSORbQN5yGaMJDj2miXVBHZsB1496+tZ6K/BfLz8wEAjuMgGAzCdV34fD6Q5/4AVVw8VAGAkcNG8MuaQ/hiz66WPdCwS9hj9s9Q31HB0bADNxCD6SegagBs0LbhC2jwU0GOqSJcr+DI+iqcWLEe+PCIR3YriS4g4vE4HMeR2xlJuaWdL3xYtvqMAozXTp4Ao3M+GtoZSIQsqJYLxzAAl1B9GvJsH3LjhFobx/71m4BVG4GPYlllZ519//792b9/f1x99dVobGyE3+9HmzZtUFNTg23btqG8vPy8REInTJjATp06oU2bNlAUBatXr8a6devOSXbv3r3Zv39/dOnSBYZhICcnB7quY+PGjVi9+swM3BLuuece9ujRQ55jdF1HXV0dXnjhhdPK1jQNqqqCJBRFgaqqSCaT55VEZ4qCwg446Jgw40nAtkHLRY6roE0ojPy4ArvqIBo+24PIH9cAO3Hmdps7dy6j0SgNwyBJOo5D13VJkpZlUdd1kuS+ffu4cOHCrD64T58+rKur8wTTdF3npEmTZPvXXntNyidJ27Zp2zZJMhqNNiu7JUyZMoUHDhzwjGvbNg3DoGVZ8n8vv/zyN5Y9ZswYlpeXe2S7rsvGxkb52TAMbtiwgQMGDGhW/k033STnlUwmPTbI1n7gwIFMJBJyTMdx6DgOy8rKPO1HjBjBE/WpIKZxspE0U+1/PHlSs3PJX3wXBxx6mVfU/Ds7/HUuu+1ZxOt3P83Oyx8kSrt98/21T58+/PLLL1OTOEUgoWTTd8MwpOIbN27MGGzOnDmSOIKAJLly5UoOGjSIx48fl4ZMXxBB1GPHjpEkd+3axV69ep1Wmd69e3Pnzp0kSdM05dzSx7Ysi47jSN10Xefs2bPPyFDvvfeeJIuQbZom4/G4xy7p11esWJFVdlFRkWxrmqZH/2zt169fT8uyGI/HJYHEmLfccovsM2PWTLokTd1KpTwMkhZZVl7RvI4/zOclL05in0+f5PWfLGLP50uJkZef/eFs3bp10tjC+Olkqa+vlwvvuq5ngZoSacmSJfLOd11XGuvgwYM8evSoZ4HFopqmyWg0yqY4ceIE+/Xr16xiffr0YbY0QvriirGEF033Sq+88kqLRvvkk088iy7sIRCLxeQ1y7JoGIYcN9sNNmzYsAzSNeeJli5dmqGTYRiMxWLcuXOnp/0Ts2bSsl3SZYpEFmknTFZWrD89KW6+lOgfOLeT/X333Ufbtj0KiYXfv38/X331VS5btozRaFQuBJkilGma1HWdEydOlJOYP3++XFjRXtd16XmEbNd1aVmW544Uhk0n8N69e5tVUGxfQoYgJUl+9tlnXLt2Ld955x05ntgaYrGY7PPUU09llf/6669nLKLQ+4svvuDmzZtZVlbGvXv3ZniVEydOkCS3bNnikT169GiPDcmvSZ3ebvz48Z5rR44cke0bGhrYt29fT/sFv/41TctJ5cysU0TSHW5el0nkbwXz5s2TRhAL5zgO9+3blzGBgwcPeowl3t99912my0snUPqdLzyZGOfQoUMeWekGFgtuWVbWM9Jzzz3nkSvw6aefcujQoRntly9f7hlDeIRjx45ltB03bpycl+M4su3Ro0c9ZzuBRx55hKSXxMKOd9xxh2xfUlIidU0/bzqO45EZjUblmoh327aZSCQ88gR+Of0JumTKE5lu6mWRlR+suTAkqqys9LhYYeDly5c3a9ymC37rrbd+vT/PmCENI5C+bTU0NHg8FwAMGTKEW7Zs8Rg/feuMxWIZc0lfMLGtRCKRFo22devWrNvJSy+95OlXVlbmmb/Y5qdOndqs/Llz53rIbNs2Lcvipk2bZJ/hw4ezOYg2O3bs8MhJJ1JzDxy/mjeLdrrNXZKWy01r1l4YEi1cuJAkM84ksViMt912W9ZJDBgwgMOHD+fw4cMzrs+fP5+2bUuSpW9jdXV17N27d7OKbd68OYPQYtu7+eabZb/p06dLg6Wf4958880WjTZ58mSSX2+vgqi7d+/29CPJkydPes5+Tb1FNog5NfVI4npJSQlJMh6PZxz8AWDRokVSr6b2W7VqVbPj/2reLLqn5iilWjY3flx2RiTy392XV/5qLMMPFhGlP2RoylC2eWwUA9OGEz+7kTmP3sQ2U2+i9sCNbPPzIezyxDhe/MAQYkBHAoBWXV0NAMjLy0MikUAoFIJpmgiFQvjTn/6EQ4cO8Z133sGyZcuwdetWBQA2bdrUbNxA5IZUVZWhfdu24ff7sXjxYlRVVTXbt7S0FFVVVTIAJ+ajaRrGjRuHlStXAgD69esnI72apoEkXNeFrusYNmwYFUWBbdswDAN+vx9+vx+O4yAnJwemacqIsUC3bt3k5/Hjx9NxHLRr1w6u64IkfD4fPv/8cwwaNIgk4ff7oWkaTNOEqqpwHAeBQEBGnv1+v8zSk0RxcTErKiqUZDIJAFBVFYqSMoOw0dChQzlt2jT4fKmcuLCbpmnYv38/Ro8e3azdVBdQmHpJ1ig+uMrp8+vXfPArNlwagBsK4WJNg6sq0A0DlmMjFAwgqPlhWRZUVUU7nwrbMtDoOAiqGnqZN6N60X9R+93vfqf89Kc/5ZAhQ2QOR2SaAaBjx4546KGH8OCDD+L48eP8wx/+gLfffhtr167NqpRlWTIqKwwljLtkyZIWg1bbt29X1qxZw5EjR6KhoQEFBQWyb9euXWW7wsJCKVdRFFiWhUAggLvvvhv33HOPbCcWhKciw4JMIriXSCQQDoc9aYf+/fvLG0GQCAD69u2LyspKkJTjCQIYhoFAIABFUWSph6Zp0DQNjuNg1KhRqKioQG5uLgBIApumiWAwCJJ444034Pf7AQCRSAQFBQVynmPGjGnJbFCJFHsIKKc+KgrA04QIC+4cSP3SHNRe4kBxTSiKgUAgBJuEbQNAEtBMwDQBxQeoPsC2U7UfmoavEkDu3SNSpSBDhw5VNmzYAAAQdwtJ6LqOYDAIRVGgaRoKCwtRWlqK8vJy7Nmzhz/5yU8y3GUoFIKqqtLQruvC7/fj8OHDLWt0Clu2bIGu6ygoKAAAKIoC13Vl7Q0A9OzZE0CKJMILiLvF5/NJ8riuC8uyAEAukGgDpBKfyWRSkl3MPxgMIhaLQdM0+P1+j8cTxE0kErKMQ9gofRwg5WVUVUVjYyOAVHQ7vexD1BHZto1OnTrBNE0AkBF8kpg0aRJ27tzZIh0UAnBPvb5+w+lqA8I+H9oFQwhDhT9pwheJAyej8EUTUHQTikOoDgEXUFxAgw/Q/EDQD4QCUHP8QEH463qiQYMGKddffz0qKirQ2NgIVVURCoVAErFYTP5PbHvXXHMNli5diqVLvXW8TY1JUhLzTCC2MACIxWIAUkZu27atZwzhKQUhxLthGLAsS/7t9/s9RBT9EokEbNtGTk4Ojh8/LmWLLUh4jWQyKb2S4zjw+XxSZrqeghwiLwakSOI4DjZu3AgAyM3NlWQUhBFbriAcAOmBbNuWN0FLULKcfHgGnuirLX9B4FgCHeoVXO60wVVae1zmK0AnM4xCI4TL7Txc3KiifaOKixMaChN+XBzzoW2ti/yjJtodsxBfv92bO/vss8+U0aNHAwDuuusu/uhHP8Ltt9+OvLw8aWBVVREOh+V+PXHiROzYsYPPPPOMItqklzmoqopgMIjOnTuf1hgAMGLECLiui3g8LscV24TA9u3bMWDAAOkVDMOApmmoqKhAZWUlbNuGz+eDZVnyTGPbNvLy8tDQ0ID8/Hw5/3g8juXLvy7cqqur85A0JycHAHDo0CG89NJLyM3NRW1tLTp06IB4PI7c3FyYpomcnBxEIhHpucTWWVtbK3ONgiiKokgvFAwGJXFd15VEikQiaNu2LZYtW4aqqiq2dJb0wZWHIbGzAdnJ5cGuiPL58++w680DcUWP76HR1BG3DbQNhxGED4auw+fzIycnHzaIeDyOHDWE9uE8RGqOYv+mPwPzzjAfeeedd3Lt2rUywJj+BGJZFhOJhJzuk08+Kf+f/nSRTCY5Z86cM37CEU9Eov+zzz4r+7799tuepx8x1uOPP37Oj7T3339/RvDQsizu2LHjnGWLpzOB9Cj4LbfcIu0qdBZ61dTUtDj23JkzUkFGI/V0Zp2ad0X5BXrE79evH1955RVWVlayvLycH330EW+//fasg0+ZMiUjZSEUFVHUWbNmSQOJayIyHYlEWsyHVVdXy5yU67oeAo4fP172e+ihh7Lm3rZt23Zaow0dOpQjRoxgcXExhwwZkrU9m0CQ6nSyu3fvztGjR3Pw4MEcPHhwRnuRgE23mwAAvPzyy0wmk1IfkUAmyY8//rjZ8RfMn5tijm6lgtWuTdO0ubly04UhUW1trVQkPTZRUlJyWgMLQyQSCRYVFREAZs+ezabeRCAWi7G+vp4TJkzICDZ++umnnkRs+gJmCzaKeabPO5lM8oEHHmjWcCJFIUih6zpra2sz2u/evZuGYciItWVZtCyLr776arOyRdS6KbHHjh0r+4i0R3pSW7QTbaqqqppyWGLatGlZx58+/fFUysMlTdehxdTnNas+ujAkqqmp8bjvaDRK13Wzuu9HHnlEGkBEiUW2XrSZO3eulJVMJmV4P1tJQyQS8YwtPovAp8jpLV68OGMuL7zwghxDyBRkmj17Nnv06CH7jB8/nhUVFSRThG8aERY3gMD999+fdRF1Xeebb76ZETB99NFHZZtEIiEj7Y7jcMmSJbJtcXFxVrnpx4G+ffvSdV1GIhFPRYWY87hx4zJsMe3Rh5liUSpt1qgbpENuKK+8MCSaMmWKZzEExB2yevVqlpWVsbq6ulnDbt261ZM703Xdk4cT7ciUl2m6iMLg6XVFgnQHDhxo1hAnTpzw5JbStwGRVRe6GYbhyUeJ+VRXV2eVX1FRwUQiIbfX9DmLG6jpuS8dojIhXebw4cOlnU3TpG3bUlZ6u3vvvTdDnuM4jMfjPHnyZMZ8Z81+gi4dJvQ4DcdNRa0dsuzD5rdAACj4RQl7vTiR3X/7YwZK+54b4YQLFQqKZF9TiBRDet7McRxPwlMcrNONG4/HWVNT40mtNM3ek8yoEjhdKUhxcbE8nDY0NGTISNeJ9NYYRaPRjEVuil27dkkdRKFdOlGbLrLjOGxsbJTEKC0t9cgvKSnJqne2lMqKFStoGIasZUpH07PfgoVzaNOhRYeRxhTpnYTDjz9q/mDd5t9K2HvDfF62az477p/Lq/Yt4uWV04jZRUQfnB2hNm/enLH4JD1Vjk0Vd12XkydP9gz48MMPM5FIZBwc33//fXbv3l2WSaSXhIjzR/r4+/bta7FKUKBXr17cvXu37Jvu+sWNIA754iYwDCMjX9YcNm7cmLUgT8yzqZ6O49A0TY4ZMyZDvtjOdF3PqFjINnZNTY1HD9GX9HqumTMeY9Ix2JCMfZ3Nt8j165o/WA8tW8yrD/wHUTOTODGDODqDoQMz2XXPQl5X/jgveWIU8cOCb06mxx57jNu3b5eLm35wbfq01FxB1/Tp0zNIF41GPdnsF198kdmQSCRYW1vLp59++htPfurUqdy7dy/Jr7eZ9BCBIFNVVVWGhzgdBg0axA8++CBjvulexTAM1tfXc8GCBS3K3rZtm4dwruvyjTfeyNqnb9++cjtNPyI0rZwcUjyQcStJiw51w2IyrpM2ee+E5vW85N2pDH+5iKH6J+k7OYf4aia1gzPZ5uA8Fh5czCt3P8Xvb1lMPHM7cVvXFnXKGijq1asX+/Xrhy5dusigWzgcRjQaxerVq/HJJ580G2BasGABp0+fLnNIIkC5bt06FBcXe/pNnDiRhYWFMjC5fPlybNmy5ZyK6Xv27MmRI0fKCLfP50M8Hsfhw4fx2muvnXOh/uTJk3nZZZfBsiyZYzx27Bj279+PlStX/v38lMvPrmePX07AcTQgoVlQ/RoQCCCpuLAtC/CpCPtykNvooiBGNFTtR+37lcDr1Rk6nnel58yZwxkzZshUgciob968GUVFRX8/Rv7/gH/qxl4P/wsaLwnCzg3gZMBCPOgAOX4ABJIWCmwVvqQDfyAAtdGC70gUh5/9b+C9ermW5/27+OnfqxLlGiIF0IrvGN7fo1SPWqTsf/b38H9+CF0bAuiYDECJGECjAc2noCEeRUGXjjjOenzVzgWu64TvT70P6K/JLe68k0jkhETiUCRCW0n0HcayHcq+f31e+fPPn4Hy1lb0POZHFzsfoYSC9h064cDe/UBOHvxtCtCYtBHKb4fOgwfK7uf9W3OiPMNxHE8mP73cohXfUaw9rhxb+0ccu3EVff88GN1KbkBDbQOuvvIqHDbi8Jk2lKiDfF8+qnbXyG7nnUSCQOm/uWNZ1jn/aEErLiA2NiruxlX4ovuHDI4oQruSG3DFlR3gyw2jQMlDtOqvwPv7vr0fdFBVVRJInI8CgYDc1lrxd4SdrmLsXIudv1kLTBrI4OWdYNQcA15a/+3+oENtba38nB4TO3jw4PkeqhUXEks3KEYzl867e9ixYwcikYgs+hJE2rlz5/keqhXfEXxrp91hw4ZRHKjLyspaT9X/wPg/rsIIGhFKWL0AAAAASUVORK5CYII=" alt="Microsoft Word document with Purview sensitivity label dropdown showing Public, Internal, Confidential, and Restricted levels, with RESTRICTED footer and auto-labeling notification">
+            <div class="ep-image-caption">Microsoft Purview in action — sensitivity labels in Word with the auto-labeling notification and document footer.</div>
+          </div>
+          <div class="points" style="margin-top:10px;">
+            <div class="point" style="border-left: 3px solid #D94F4F;">
+              <div class="point-icon" style="background:#D94F4F;"><svg><use href="#i-lock"/></svg></div>
+              <div class="point-text"><strong>Restricted</strong> — Highly sensitive, business-critical, or legally regulated information. Access limited to executives or authorised personnel only. Examples: draft contracts, payroll data, board documents, source code, encryption keys. Footer: <em>RESTRICTED</em></div>
+            </div>
+            <div class="point" style="border-left: 3px solid #E08B17;">
+              <div class="point-icon" style="background:#E08B17;"><svg><use href="#i-shield"/></svg></div>
+              <div class="point-text"><strong>Confidential</strong> — Sensitive business or personal information needed for operations. Access restricted to specific roles with a business need. Examples: signed contracts, customer PII, HR reviews, financial reports. Footer: <em>CONFIDENTIAL</em></div>
+            </div>
+            <div class="point" style="border-left: 3px solid #3B7FBF;">
+              <div class="point-icon" style="background:#3B7FBF;"><svg><use href="#i-eye"/></svg></div>
+              <div class="point-text"><strong>Internal</strong> — Company-only information used in daily operations. Not for public or external sharing. Examples: meeting notes, internal policies, routine communications. Footer: <em>INTERNAL</em></div>
+            </div>
+            <div class="point" style="border-left: 3px solid #16A34A;">
+              <div class="point-icon" style="background:#16A34A;"><svg><use href="#i-globe"/></svg></div>
+              <div class="point-text"><strong>Public</strong> — Documents intended for public consumption which can be freely distributed outside Speeki. Examples: marketing materials, product descriptions, release notes, external-facing policies.</div>
+            </div>
+          </div>
+        </div>
+        <div class="section">
+          <div class="section-label">How Purview labels work</div>
+          <div class="callout info">
+            <div class="callout-title"><svg><use href="#i-file-text"/></svg> Auto-labelling is enabled</div>
+            <p>Microsoft Purview automatically detects and labels sensitive content in your files and emails. You'll see a sensitivity label bar at the top of your documents in Office apps. You can also set labels manually. Labels apply across files, emails, and Teams meetings. When in doubt, apply a <strong>higher</strong> classification — it's easier to downgrade than to recover from a data leak.</p>
+          </div>
+        </div>
+        <div class="section">
+          <div class="section-label">Handling rules for remote workers</div>
+          <div class="callout">
+            <div class="callout-title"><svg><use href="#i-monitor"/></svg> Daily Practices</div>
+            <p><strong>Lock your screen</strong> when you step away — even at home (Win+L / Cmd+Ctrl+Q). Others may have access to your workspace.<br><br>
+            <strong>File sharing:</strong> Use SharePoint and OneDrive only. Never email confidential data unencrypted or use personal cloud storage (Google Drive, Dropbox, etc.).<br><br>
+            <strong>Cloud storage:</strong> All Speeki data must stay in Microsoft 365. Do not download confidential files to personal devices.<br><br>
+            <strong>Disposal:</strong> Securely delete files you no longer need. When returning or replacing a device, ensure IT wipes it first.</p>
+          </div>
+        </div>
+        <div class="takeaway">
+          <div class="takeaway-label"><svg><use href="#i-shield"/></svg> Key Takeaway</div>
+          <p>Speeki uses four sensitivity levels: Public, Internal, Confidential, and Restricted. Labels are applied automatically by Microsoft Purview, but always check before sharing. When in doubt, classify higher. Use SharePoint/OneDrive only — never personal cloud storage.</p>
+        </div>
+      </div>
+    </div>
+    <div class="nav">
+      <button class="btn btn-ghost" onclick="goTo(3)"><svg><use href="#i-arrow-left"/></svg> Back</button>
+      <div class="nav-counter">3 of 6</div>
+      <button class="btn btn-primary" onclick="goTo(5)">Episode 4 <svg><use href="#i-arrow-right"/></svg></button>
+    </div>
+  </div>
+
+  <!-- ===== SLIDE 5: INCIDENT REPORTING ===== -->
+  <div class="slide" data-slide="5">
+    <div class="card">
+      <div class="card-header">
+        <div class="ep-num">Episode 4 of 6</div>
+        <h2>Incident Reporting</h2>
+        <div class="header-icon"><svg><use href="#i-alert"/></svg></div>
+      </div>
+      <div class="card-body">
+        <div class="section">
+          <div class="section-label">What counts as an incident?</div>
+          <div class="ep-image">
+            <img src="data:image/png;base64,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" alt="Outlook showing a sensitive email accidentally sent to wrong external recipient with incident response steps overlay">
+            <div class="ep-image-caption">Example: A client report accidentally sent to the wrong external email — report immediately, don't try to fix it yourself.</div>
+          </div>
+          <p>A security incident is any event that threatens the confidentiality, integrity, or availability of information. You don't need to be certain — if something feels wrong, report it.</p>
+          <div class="points" style="margin-top:10px;">
+            <div class="point">
+              <div class="point-icon"><svg><use href="#i-mail"/></svg></div>
+              <div class="point-text">Clicked a suspicious link or opened an unexpected attachment</div>
+            </div>
+            <div class="point">
+              <div class="point-icon"><svg><use href="#i-monitor"/></svg></div>
+              <div class="point-text">Lost or stolen device (laptop, phone, USB drive)</div>
+            </div>
+            <div class="point">
+              <div class="point-icon"><svg><use href="#i-users"/></svg></div>
+              <div class="point-text">Unauthorised person accessing systems or shared accounts</div>
+            </div>
+            <div class="point">
+              <div class="point-icon"><svg><use href="#i-upload-cloud"/></svg></div>
+              <div class="point-text">Data accidentally sent to the wrong person or shared publicly</div>
+            </div>
+            <div class="point">
+              <div class="point-icon"><svg><use href="#i-key"/></svg></div>
+              <div class="point-text">Shared credentials or discovered exposed passwords</div>
+            </div>
+          </div>
+        </div>
+        <div class="section">
+          <div class="section-label">How to report</div>
+          <div class="callout info">
+            <div class="callout-title"><svg><use href="#i-message"/></svg> Reporting Steps</div>
+            <p><strong>1.</strong> Notify your manager and the IT/security team immediately via Microsoft Teams or email.<br>
+            <strong>2.</strong> Don't try to fix it yourself — preserve evidence (don't delete the suspicious email, don't wipe the device).<br>
+            <strong>3.</strong> Document what happened: what, when, and how you noticed it.<br>
+            <strong>4.</strong> Follow any additional instructions from the security team.</p>
+          </div>
+        </div>
+        <div class="section">
+          <div class="section-label">Working remotely</div>
+          <p>Since we're fully remote, physical security still applies to your home workspace. Keep your work devices secure, use a private workspace during calls discussing sensitive information, and never leave your laptop unattended in public spaces like cafes or co-working areas.</p>
+        </div>
+        <div class="takeaway">
+          <div class="takeaway-label"><svg><use href="#i-shield"/></svg> Key Takeaway</div>
+          <p>Report fast, report early. There is no penalty for false alarms — but delayed reporting can make a breach far worse. Every minute counts.</p>
+        </div>
+      </div>
+    </div>
+    <div class="nav">
+      <button class="btn btn-ghost" onclick="goTo(4)"><svg><use href="#i-arrow-left"/></svg> Back</button>
+      <div class="nav-counter">4 of 6</div>
+      <button class="btn btn-primary" onclick="goTo(6)">Episode 5 <svg><use href="#i-arrow-right"/></svg></button>
+    </div>
+  </div>
+
+  <!-- ===== SLIDE 6: AI SAFE USE ===== -->
+  <div class="slide" data-slide="6">
+    <div class="card">
+      <div class="card-header">
+        <div class="ep-num">Episode 5 of 6 — AI Security</div>
+        <h2>Safe Use of AI Tools at Work</h2>
+        <div class="header-icon"><svg><use href="#i-cpu"/></svg></div>
+      </div>
+      <div class="card-body">
+        <div class="section">
+          <div class="section-label">AI is powerful — but risky if misused</div>
+          <div class="ep-image">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJEAAAApCAYAAAA1Qcs7AAAV6UlEQVR4nO1ce3RU1bn/nTlnHpmQBAQJik+QVqDIq7oQSIAgjytyRem9vopdBtDaeosWXFV5P8XK1WtXr+uqKNflvdraWgVdiCImhPDyAaQpD4ECQkAggUxmMjPn/bt/DHs7JzMJCEhtb35rzZpJzt7f3t+3f+fb+3zfN6OgFf8QuGFUEUsnT8LleYXwJyws/9/f4z//+D/K33perfiWMHDgQA4ZMoTDhg3jddddx3OV9+gjv2CcFk8ySZskbZI6+cbzS89Zdiu+gzh58iSb4q233jrrxb62SxfaVpI6HSbppEjkkDRc0iKHD7vp/BCpTz4xqD1xQ/sMedp5GaAVZ4SioiK2a9cOlmVB0zQoigLTNDF27Nizljm4uAiqpsGCCx98sB0bru3Cr/oBx8ak+0qxpuyjs5/0wHa8aFQRLi/uj3DhRUhGGrH7vbVMLFolt8pWEl1AhEIh6LqOUCgE27bhOA4AIBAInLXM7r1+gKShIxAMQzd1+LUgtGAArk34/Bo6dep0doJvvZTh0Teiy/W9EQ+rOOB34AZjuKh9Hq4acyN2bK4m1hxWAMB31rNvxTdGXV0dQqEQXNeFpmkIBoMIBoPQdf2sZa4p+xjBYBCWaSAcCEFhardJmgboA95esfybCbzjWl7x2iR2n/cgLhreG5FL/Diaa6CxvR+xXOLLeC3Uwnx0/F4X2aXVE11AdO7cGbZtQ1VVAIBt29A0Da7rnrXMle+9r+zbd4DXdOmKaDSK/Py2IIBgOISjJ07gN7997vRPaNdqxOAf4NKxg5H/g6tQ7zdRxwS0gAq/64J04NomNH8QPn8AiboEjtcckd1bSXQBUVdXB01LmdwwDASDQQBAOBw+J7ndun5PqagoZ1FREUzdgD8UxNa/VOO+0tKWO17rY3BsCa4Y2Attel+BI5qBXTwB5AagaAEwnkSORbQN5yGaMJDj2miXVBHZsB1496+tZ6K/BfLz8wEAjuMgGAzCdV34fD6Q5/4AVVw8VAGAkcNG8MuaQ/hiz66WPdCwS9hj9s9Q31HB0bADNxCD6SegagBs0LbhC2jwU0GOqSJcr+DI+iqcWLEe+PCIR3YriS4g4vE4HMeR2xlJuaWdL3xYtvqMAozXTp4Ao3M+GtoZSIQsqJYLxzAAl1B9GvJsH3LjhFobx/71m4BVG4GPYlllZ519//792b9/f1x99dVobGyE3+9HmzZtUFNTg23btqG8vPy8REInTJjATp06oU2bNlAUBatXr8a6devOSXbv3r3Zv39/dOnSBYZhICcnB7quY+PGjVi9+swM3BLuuece9ujRQ55jdF1HXV0dXnjhhdPK1jQNqqqCJBRFgaqqSCaT55VEZ4qCwg446Jgw40nAtkHLRY6roE0ojPy4ArvqIBo+24PIH9cAO3Hmdps7dy6j0SgNwyBJOo5D13VJkpZlUdd1kuS+ffu4cOHCrD64T58+rKur8wTTdF3npEmTZPvXXntNyidJ27Zp2zZJMhqNNiu7JUyZMoUHDhzwjGvbNg3DoGVZ8n8vv/zyN5Y9ZswYlpeXe2S7rsvGxkb52TAMbtiwgQMGDGhW/k033STnlUwmPTbI1n7gwIFMJBJyTMdx6DgOy8rKPO1HjBjBE/WpIKZxspE0U+1/PHlSs3PJX3wXBxx6mVfU/Ds7/HUuu+1ZxOt3P83Oyx8kSrt98/21T58+/PLLL1OTOEUgoWTTd8MwpOIbN27MGGzOnDmSOIKAJLly5UoOGjSIx48fl4ZMXxBB1GPHjpEkd+3axV69ep1Wmd69e3Pnzp0kSdM05dzSx7Ysi47jSN10Xefs2bPPyFDvvfeeJIuQbZom4/G4xy7p11esWJFVdlFRkWxrmqZH/2zt169fT8uyGI/HJYHEmLfccovsM2PWTLokTd1KpTwMkhZZVl7RvI4/zOclL05in0+f5PWfLGLP50uJkZef/eFs3bp10tjC+Olkqa+vlwvvuq5ngZoSacmSJfLOd11XGuvgwYM8evSoZ4HFopqmyWg0yqY4ceIE+/Xr16xiffr0YbY0QvriirGEF033Sq+88kqLRvvkk088iy7sIRCLxeQ1y7JoGIYcN9sNNmzYsAzSNeeJli5dmqGTYRiMxWLcuXOnp/0Ts2bSsl3SZYpEFmknTFZWrD89KW6+lOgfOLeT/X333Ufbtj0KiYXfv38/X331VS5btozRaFQuBJkilGma1HWdEydOlJOYP3++XFjRXtd16XmEbNd1aVmW544Uhk0n8N69e5tVUGxfQoYgJUl+9tlnXLt2Ld955x05ntgaYrGY7PPUU09llf/6669nLKLQ+4svvuDmzZtZVlbGvXv3ZniVEydOkCS3bNnikT169GiPDcmvSZ3ebvz48Z5rR44cke0bGhrYt29fT/sFv/41TctJ5cysU0TSHW5el0nkbwXz5s2TRhAL5zgO9+3blzGBgwcPeowl3t99912my0snUPqdLzyZGOfQoUMeWekGFgtuWVbWM9Jzzz3nkSvw6aefcujQoRntly9f7hlDeIRjx45ltB03bpycl+M4su3Ro0c9ZzuBRx55hKSXxMKOd9xxh2xfUlIidU0/bzqO45EZjUblmoh327aZSCQ88gR+Of0JumTKE5lu6mWRlR+suTAkqqys9LhYYeDly5c3a9ymC37rrbd+vT/PmCENI5C+bTU0NHg8FwAMGTKEW7Zs8Rg/feuMxWIZc0lfMLGtRCKRFo22devWrNvJSy+95OlXVlbmmb/Y5qdOndqs/Llz53rIbNs2Lcvipk2bZJ/hw4ezOYg2O3bs8MhJJ1JzDxy/mjeLdrrNXZKWy01r1l4YEi1cuJAkM84ksViMt912W9ZJDBgwgMOHD+fw4cMzrs+fP5+2bUuSpW9jdXV17N27d7OKbd68OYPQYtu7+eabZb/p06dLg6Wf4958880WjTZ58mSSX2+vgqi7d+/29CPJkydPes5+Tb1FNog5NfVI4npJSQlJMh6PZxz8AWDRokVSr6b2W7VqVbPj/2reLLqn5iilWjY3flx2RiTy392XV/5qLMMPFhGlP2RoylC2eWwUA9OGEz+7kTmP3sQ2U2+i9sCNbPPzIezyxDhe/MAQYkBHAoBWXV0NAMjLy0MikUAoFIJpmgiFQvjTn/6EQ4cO8Z133sGyZcuwdetWBQA2bdrUbNxA5IZUVZWhfdu24ff7sXjxYlRVVTXbt7S0FFVVVTIAJ+ajaRrGjRuHlStXAgD69esnI72apoEkXNeFrusYNmwYFUWBbdswDAN+vx9+vx+O4yAnJwemacqIsUC3bt3k5/Hjx9NxHLRr1w6u64IkfD4fPv/8cwwaNIgk4ff7oWkaTNOEqqpwHAeBQEBGnv1+v8zSk0RxcTErKiqUZDIJAFBVFYqSMoOw0dChQzlt2jT4fKmcuLCbpmnYv38/Ro8e3azdVBdQmHpJ1ig+uMrp8+vXfPArNlwagBsK4WJNg6sq0A0DlmMjFAwgqPlhWRZUVUU7nwrbMtDoOAiqGnqZN6N60X9R+93vfqf89Kc/5ZAhQ2QOR2SaAaBjx4546KGH8OCDD+L48eP8wx/+gLfffhtr167NqpRlWTIqKwwljLtkyZIWg1bbt29X1qxZw5EjR6KhoQEFBQWyb9euXWW7wsJCKVdRFFiWhUAggLvvvhv33HOPbCcWhKciw4JMIriXSCQQDoc9aYf+/fvLG0GQCAD69u2LyspKkJTjCQIYhoFAIABFUWSph6Zp0DQNjuNg1KhRqKioQG5uLgBIApumiWAwCJJ444034Pf7AQCRSAQFBQVynmPGjGnJbFCJFHsIKKc+KgrA04QIC+4cSP3SHNRe4kBxTSiKgUAgBJuEbQNAEtBMwDQBxQeoPsC2U7UfmoavEkDu3SNSpSBDhw5VNmzYAAAQdwtJ6LqOYDAIRVGgaRoKCwtRWlqK8vJy7Nmzhz/5yU8y3GUoFIKqqtLQruvC7/fj8OHDLWt0Clu2bIGu6ygoKAAAKIoC13Vl7Q0A9OzZE0CKJMILiLvF5/NJ8riuC8uyAEAukGgDpBKfyWRSkl3MPxgMIhaLQdM0+P1+j8cTxE0kErKMQ9gofRwg5WVUVUVjYyOAVHQ7vexD1BHZto1OnTrBNE0AkBF8kpg0aRJ27tzZIh0UAnBPvb5+w+lqA8I+H9oFQwhDhT9pwheJAyej8EUTUHQTikOoDgEXUFxAgw/Q/EDQD4QCUHP8QEH463qiQYMGKddffz0qKirQ2NgIVVURCoVAErFYTP5PbHvXXHMNli5diqVLvXW8TY1JUhLzTCC2MACIxWIAUkZu27atZwzhKQUhxLthGLAsS/7t9/s9RBT9EokEbNtGTk4Ojh8/LmWLLUh4jWQyKb2S4zjw+XxSZrqeghwiLwakSOI4DjZu3AgAyM3NlWQUhBFbriAcAOmBbNuWN0FLULKcfHgGnuirLX9B4FgCHeoVXO60wVVae1zmK0AnM4xCI4TL7Txc3KiifaOKixMaChN+XBzzoW2ti/yjJtodsxBfv92bO/vss8+U0aNHAwDuuusu/uhHP8Ltt9+OvLw8aWBVVREOh+V+PXHiROzYsYPPPPOMItqklzmoqopgMIjOnTuf1hgAMGLECLiui3g8LscV24TA9u3bMWDAAOkVDMOApmmoqKhAZWUlbNuGz+eDZVnyTGPbNvLy8tDQ0ID8/Hw5/3g8juXLvy7cqqur85A0JycHAHDo0CG89NJLyM3NRW1tLTp06IB4PI7c3FyYpomcnBxEIhHpucTWWVtbK3ONgiiKokgvFAwGJXFd15VEikQiaNu2LZYtW4aqqiq2dJb0wZWHIbGzAdnJ5cGuiPL58++w680DcUWP76HR1BG3DbQNhxGED4auw+fzIycnHzaIeDyOHDWE9uE8RGqOYv+mPwPzzjAfeeedd3Lt2rUywJj+BGJZFhOJhJzuk08+Kf+f/nSRTCY5Z86cM37CEU9Eov+zzz4r+7799tuepx8x1uOPP37Oj7T3339/RvDQsizu2LHjnGWLpzOB9Cj4LbfcIu0qdBZ61dTUtDj23JkzUkFGI/V0Zp2ad0X5BXrE79evH1955RVWVlayvLycH330EW+//fasg0+ZMiUjZSEUFVHUWbNmSQOJayIyHYlEWsyHVVdXy5yU67oeAo4fP172e+ihh7Lm3rZt23Zaow0dOpQjRoxgcXExhwwZkrU9m0CQ6nSyu3fvztGjR3Pw4MEcPHhwRnuRgE23mwAAvPzyy0wmk1IfkUAmyY8//rjZ8RfMn5tijm6lgtWuTdO0ubly04UhUW1trVQkPTZRUlJyWgMLQyQSCRYVFREAZs+ezabeRCAWi7G+vp4TJkzICDZ++umnnkRs+gJmCzaKeabPO5lM8oEHHmjWcCJFIUih6zpra2sz2u/evZuGYciItWVZtCyLr776arOyRdS6KbHHjh0r+4i0R3pSW7QTbaqqqppyWGLatGlZx58+/fFUysMlTdehxdTnNas+ujAkqqmp8bjvaDRK13Wzuu9HHnlEGkBEiUW2XrSZO3eulJVMJmV4P1tJQyQS8YwtPovAp8jpLV68OGMuL7zwghxDyBRkmj17Nnv06CH7jB8/nhUVFSRThG8aERY3gMD999+fdRF1Xeebb76ZETB99NFHZZtEIiEj7Y7jcMmSJbJtcXFxVrnpx4G+ffvSdV1GIhFPRYWY87hx4zJsMe3Rh5liUSpt1qgbpENuKK+8MCSaMmWKZzEExB2yevVqlpWVsbq6ulnDbt261ZM703Xdk4cT7ciUl2m6iMLg6XVFgnQHDhxo1hAnTpzw5JbStwGRVRe6GYbhyUeJ+VRXV2eVX1FRwUQiIbfX9DmLG6jpuS8dojIhXebw4cOlnU3TpG3bUlZ6u3vvvTdDnuM4jMfjPHnyZMZ8Z81+gi4dJvQ4DcdNRa0dsuzD5rdAACj4RQl7vTiR3X/7YwZK+54b4YQLFQqKZF9TiBRDet7McRxPwlMcrNONG4/HWVNT40mtNM3ek8yoEjhdKUhxcbE8nDY0NGTISNeJ9NYYRaPRjEVuil27dkkdRKFdOlGbLrLjOGxsbJTEKC0t9cgvKSnJqne2lMqKFStoGIasZUpH07PfgoVzaNOhRYeRxhTpnYTDjz9q/mDd5t9K2HvDfF62az477p/Lq/Yt4uWV04jZRUQfnB2hNm/enLH4JD1Vjk0Vd12XkydP9gz48MMPM5FIZBwc33//fXbv3l2WSaSXhIjzR/r4+/bta7FKUKBXr17cvXu37Jvu+sWNIA754iYwDCMjX9YcNm7cmLUgT8yzqZ6O49A0TY4ZMyZDvtjOdF3PqFjINnZNTY1HD9GX9HqumTMeY9Ix2JCMfZ3Nt8j165o/WA8tW8yrD/wHUTOTODGDODqDoQMz2XXPQl5X/jgveWIU8cOCb06mxx57jNu3b5eLm35wbfq01FxB1/Tp0zNIF41GPdnsF198kdmQSCRYW1vLp59++htPfurUqdy7dy/Jr7eZ9BCBIFNVVVWGhzgdBg0axA8++CBjvulexTAM1tfXc8GCBS3K3rZtm4dwruvyjTfeyNqnb9++cjtNPyI0rZwcUjyQcStJiw51w2IyrpM2ee+E5vW85N2pDH+5iKH6J+k7OYf4aia1gzPZ5uA8Fh5czCt3P8Xvb1lMPHM7cVvXFnXKGijq1asX+/Xrhy5dusigWzgcRjQaxerVq/HJJ580G2BasGABp0+fLnNIIkC5bt06FBcXe/pNnDiRhYWFMjC5fPlybNmy5ZyK6Xv27MmRI0fKCLfP50M8Hsfhw4fx2muvnXOh/uTJk3nZZZfBsiyZYzx27Bj279+PlStX/v38lMvPrmePX07AcTQgoVlQ/RoQCCCpuLAtC/CpCPtykNvooiBGNFTtR+37lcDr1Rk6nnel58yZwxkzZshUgciob968GUVFRX8/Rv7/gH/qxl4P/wsaLwnCzg3gZMBCPOgAOX4ABJIWCmwVvqQDfyAAtdGC70gUh5/9b+C9ermW5/27+OnfqxLlGiIF0IrvGN7fo1SPWqTsf/b38H9+CF0bAuiYDECJGECjAc2noCEeRUGXjjjOenzVzgWu64TvT70P6K/JLe68k0jkhETiUCRCW0n0HcayHcq+f31e+fPPn4Hy1lb0POZHFzsfoYSC9h064cDe/UBOHvxtCtCYtBHKb4fOgwfK7uf9W3OiPMNxHE8mP73cohXfUaw9rhxb+0ccu3EVff88GN1KbkBDbQOuvvIqHDbi8Jk2lKiDfF8+qnbXyG7nnUSCQOm/uWNZ1jn/aEErLiA2NiruxlX4ovuHDI4oQruSG3DFlR3gyw2jQMlDtOqvwPv7vr0fdFBVVRJInI8CgYDc1lrxd4SdrmLsXIudv1kLTBrI4OWdYNQcA15a/+3+oENtba38nB4TO3jw4PkeqhUXEks3KEYzl867e9ixYwcikYgs+hJE2rlz5/keqhXfEXxrp91hw4ZRHKjLyspaT9X/wPg/rsIIGhFKWL0AAAAASUVORK5CYII=" alt="Split screen showing unsafe practice of pasting client data into AI vs safe practice of using AI for general non-sensitive tasks">
+            <div class="ep-image-caption">Left: NEVER paste confidential data into public AI tools. Right: General, non-sensitive requests are fine.</div>
+          </div>
+          <p>AI tools like ChatGPT, Claude, Copilot, and Gemini are increasingly part of daily work. They can boost your productivity, but they also introduce new security risks. Anything you type into an AI tool could potentially be stored, used for model training, or exposed in a breach.</p>
+        </div>
+        <div class="section">
+          <div class="section-label">The golden rules</div>
+          <div class="points">
+            <div class="point">
+              <div class="point-icon danger"><svg><use href="#i-x"/></svg></div>
+              <div class="point-text"><strong>Never paste confidential data into public AI tools</strong> — No client names, financials, personal data, passwords, source code, or internal documents. Assume anything you type could become public.</div>
+            </div>
+            <div class="point">
+              <div class="point-icon"><svg><use href="#i-check"/></svg></div>
+              <div class="point-text"><strong>Use only approved AI tools</strong> — Check with IT/management which AI tools are sanctioned for work use. Free consumer versions often have weaker data protections than enterprise plans.</div>
+            </div>
+            <div class="point">
+              <div class="point-icon"><svg><use href="#i-eye"/></svg></div>
+              <div class="point-text"><strong>Always review AI output</strong> — AI can generate plausible-sounding but incorrect information ("hallucinations"). Never blindly trust or copy-paste AI output into client deliverables without checking it.</div>
+            </div>
+            <div class="point">
+              <div class="point-icon"><svg><use href="#i-file-text"/></svg></div>
+              <div class="point-text"><strong>Disclose AI usage where required</strong> — If you use AI to draft client deliverables, reports, or communications, follow Speeki's policy on disclosure.</div>
+            </div>
+          </div>
+        </div>
+        <div class="section">
+          <div class="section-label">Prompt injection — a new risk</div>
+          <div class="callout danger">
+            <div class="callout-title"><svg><use href="#i-alert"/></svg> What is Prompt Injection?</div>
+            <p>Attackers can hide malicious instructions inside documents, emails, or web pages. When you paste that content into an AI tool, the hidden instructions can trick the AI into leaking your data or performing harmful actions. Never paste untrusted content directly into AI prompts — especially full emails, web pages, or documents from unknown sources.</p>
+          </div>
+        </div>
+        <div class="takeaway">
+          <div class="takeaway-label"><svg><use href="#i-shield"/></svg> Key Takeaway</div>
+          <p>Treat AI tools like a public conversation. Never share anything you wouldn't post on a public bulletin board. Use approved tools, verify the output, and be aware of prompt injection risks.</p>
+        </div>
+      </div>
+    </div>
+    <div class="nav">
+      <button class="btn btn-ghost" onclick="goTo(5)"><svg><use href="#i-arrow-left"/></svg> Back</button>
+      <div class="nav-counter">5 of 6</div>
+      <button class="btn btn-primary" onclick="goTo(7)">Episode 6 <svg><use href="#i-arrow-right"/></svg></button>
+    </div>
+  </div>
+
+  <!-- ===== SLIDE 7: AI THREATS ===== -->
+  <div class="slide" data-slide="7">
+    <div class="card">
+      <div class="card-header">
+        <div class="ep-num">Episode 6 of 6 — AI Security</div>
+        <h2>AI-Powered Threats</h2>
+        <div class="header-icon"><svg><use href="#i-zap"/></svg></div>
+      </div>
+      <div class="card-body">
+        <div class="section">
+          <div class="section-label">Attackers use AI too</div>
+          <div class="ep-image">
+            <img src="data:image/png;base64,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" alt="Microsoft Teams video call with one participant flagged as potential deepfake, with warning about AI voice and video cloning">
+            <div class="ep-image-caption">AI deepfakes can impersonate colleagues on video calls. Always verify unusual requests through a separate channel.</div>
+          </div>
+          <p>The same AI that helps you write emails and analyse data is now being used by attackers to create more convincing, harder-to-detect threats. Here's what to watch for.</p>
+        </div>
+        <div class="section">
+          <div class="section-label">New AI-powered attack types</div>
+          <div class="points">
+            <div class="point">
+              <div class="point-icon danger"><svg><use href="#i-mail"/></svg></div>
+              <div class="point-text"><strong>AI-generated phishing</strong> — Attackers use AI to write flawless phishing emails with perfect grammar, no typos, and personalised details scraped from LinkedIn. The old "look for typos" advice is no longer enough.</div>
+            </div>
+            <div class="point">
+              <div class="point-icon danger"><svg><use href="#i-phone"/></svg></div>
+              <div class="point-text"><strong>Voice deepfakes</strong> — AI can clone someone's voice from just a few seconds of audio. Attackers have used fake CEO voice calls to authorise fraudulent wire transfers. If a voice call requests something unusual, hang up and verify through a separate channel.</div>
+            </div>
+            <div class="point">
+              <div class="point-icon danger"><svg><use href="#i-video"/></svg></div>
+              <div class="point-text"><strong>Video deepfakes on calls</strong> — Real-time video deepfakes can impersonate colleagues on Teams calls. In one case, a company lost $25 million to a deepfake video call. If something feels off about a video call, verify identity through a separate channel.</div>
+            </div>
+            <div class="point">
+              <div class="point-icon danger"><svg><use href="#i-message"/></svg></div>
+              <div class="point-text"><strong>Automated social engineering</strong> — AI chatbots can impersonate IT support or HR in real-time conversations via email or Teams messages, adapting their responses dynamically to sound convincing.</div>
+            </div>
+          </div>
+        </div>
+        <div class="section">
+          <div class="section-label">How to protect yourself</div>
+          <div class="callout info">
+            <div class="callout-title"><svg><use href="#i-shield"/></svg> Defence Strategies</div>
+            <p><strong>Verify through separate channels</strong> — Any unusual request (money, data, access) should be confirmed via a different communication method. If you got a Teams message, call them. If you got a call, message them on Teams.<br><br>
+            <strong>Trust your instincts</strong> — If something feels off about a message, call, or video, pause and verify. AI-generated content can be very convincing but often has subtle inconsistencies.<br><br>
+            <strong>Establish verification phrases</strong> — For high-stakes decisions (wire transfers, data access), consider having a pre-agreed verification phrase with your team.</p>
+          </div>
+        </div>
+        <div class="takeaway">
+          <div class="takeaway-label"><svg><use href="#i-shield"/></svg> Key Takeaway</div>
+          <p>AI makes attacks more convincing, not just more frequent. Your best defence remains the same: STOP, VERIFY through a separate channel, and REPORT. Technology changes; the human firewall remains critical.</p>
+        </div>
+      </div>
+    </div>
+    <div class="nav">
+      <button class="btn btn-ghost" onclick="goTo(6)"><svg><use href="#i-arrow-left"/></svg> Back</button>
+      <div class="nav-counter">6 of 6</div>
+      <button class="btn btn-primary" onclick="goTo(8)">Take the Quiz <svg><use href="#i-arrow-right"/></svg></button>
+    </div>
+  </div>
+
+  <!-- ===== SLIDE 8: QUIZ ===== -->
+  <div class="slide" data-slide="8">
+    <div class="card">
+      <div class="card-header">
+        <div class="ep-num">Assessment</div>
+        <h2>Knowledge Check — 10 Questions</h2>
+        <div class="header-icon"><svg><use href="#i-clipboard"/></svg></div>
+      </div>
+      <div class="card-body">
+        <p style="font-size:14px;color:var(--text-secondary);margin-bottom:24px;">Answer all 10 questions. You need <strong>7 out of 10 correct (70%)</strong> to pass. You can go back to review content at any time.</p>
+        <div id="quizQuestions"></div>
+        <button class="btn btn-primary" id="submitQuiz" onclick="submitQuiz()" style="width:100%;justify-content:center;margin-top:20px;padding:14px;">Submit Answers</button>
+      </div>
+    </div>
+    <div class="nav">
+      <button class="btn btn-ghost" onclick="goTo(1)"><svg><use href="#i-arrow-left"/></svg> Review Content</button>
+      <div class="nav-counter">Quiz</div>
+      <div></div>
+    </div>
+  </div>
+
+  <!-- ===== SLIDE 9: RESULTS ===== -->
+  <div class="slide" data-slide="9">
+    <div class="card">
+      <div class="results" id="resultsCard"></div>
+    </div>
+    <div class="nav" id="resultsNav"></div>
+  </div>
+
+</div>
+
+<script>
+  // ===== STATE =====
+  let userName = '';
+  let userEmail = '';
+  let userAnswers = {};
+  let currentSlide = 0;
+  const TOTAL_SLIDES = 10;
+  const PASS_THRESHOLD = 7;
+
+  // ===== QUIZ DATA (10 questions) — answers obfuscated =====
+  // Answer key is encoded to prevent reading from source code
+  const _k = atob('MiwxLDIsMSwxLDIsMSwyLDIsMg==').split(',').map(Number);
+  const questions = [
+    {
+      q: "You receive an urgent email from \"IT Support\" asking you to click a link and reset your Microsoft 365 password immediately. What should you do?",
+      opts: [
+        "Click the link — IT wouldn't ask if it wasn't urgent",
+        "Reply to the email asking if it's legitimate",
+        "STOP, don't click, VERIFY with IT through a separate Teams message or phone call, then REPORT",
+        "Forward it to all colleagues to warn them"
+      ]
+    },
+    {
+      q: "What is the minimum password length for a standard user account at Speeki?",
+      opts: [
+        "6 characters",
+        "8 characters",
+        "12 characters",
+        "14 characters"
+      ]
+    },
+    {
+      q: "You have local administrator rights on your work laptop. What is the minimum password length required for this local admin account?",
+      opts: [
+        "8 characters",
+        "10 characters",
+        "12 characters",
+        "16 characters"
+      ]
+    },
+    {
+      q: "What does MFA (Multi-Factor Authentication) require?",
+      opts: [
+        "Two different passwords",
+        "Something you know (password) plus something you have (authenticator app/device)",
+        "Answering security questions",
+        "Using a VPN and a password"
+      ]
+    },
+    {
+      q: "A colleague asks you to share a client's financial report. This document has a \"Confidential\" sensitivity label in Microsoft Purview. Where should you share it?",
+      opts: [
+        "Via personal Gmail for convenience",
+        "Through SharePoint or OneDrive, after confirming they have legitimate need-to-know access",
+        "Attach it to a Teams message in the general channel",
+        "Upload it to your personal Dropbox and share the link"
+      ]
+    },
+    {
+      q: "You accidentally sent a spreadsheet with client personal data to the wrong external email address. What should you do first?",
+      opts: [
+        "Hope they don't notice and delete the sent email",
+        "Send a follow-up email asking them to delete it",
+        "Report the incident to your manager and the security team immediately",
+        "Wait until the next team meeting to mention it"
+      ]
+    },
+    {
+      q: "Which of the following is safe to paste into a public AI tool (like the free version of ChatGPT)?",
+      opts: [
+        "Client names and contract values",
+        "A general request like \"Help me write a professional email about project timelines\"",
+        "Internal source code from our platform",
+        "Employee personal information"
+      ]
+    },
+    {
+      q: "What is prompt injection?",
+      opts: [
+        "A way to speed up AI responses",
+        "A coding technique for improving AI accuracy",
+        "Hidden malicious instructions in content that trick AI into harmful actions when pasted into a prompt",
+        "A method for bypassing MFA"
+      ]
+    },
+    {
+      q: "You're at an airport lounge and need to check a client proposal on SharePoint. The lounge offers free Wi-Fi — no password required. What should you do?",
+      opts: [
+        "Connect to the free Wi-Fi — it's an official airport lounge, so it must be safe",
+        "Connect and just avoid online banking — checking SharePoint is fine",
+        "Use your phone's mobile hotspot or connect through the company VPN before accessing any work resources",
+        "Ask the lounge staff if the Wi-Fi is secure, then connect if they say yes"
+      ]
+    },
+    {
+      q: "You're working from a cafe and need to step away for a moment. What should you do with your laptop?",
+      opts: [
+        "Leave it open on the table — you'll only be gone a minute",
+        "Ask the person at the next table to watch it",
+        "Lock the screen (Win+L) and take it with you, or pack it away securely",
+        "Just close the lid — it will lock eventually on its own"
+      ]
+    }
+  ];
+  // Bind decoded answers
+  questions.forEach((q, i) => { Object.defineProperty(q, String.fromCharCode(97), { get: function() { return _k[i]; }, enumerable: false }); });
+
+  // ===== REGISTRATION =====
+  // ===== MSAL CONFIG =====
+  const msalConfig = {
+    auth: {
+      clientId: 'b99d6b29-6c84-498c-8f75-65de3a75271e',
+      authority: 'https://login.microsoftonline.com/f606610b-47ea-46e1-b63a-0a1d802ed892',
+      redirectUri: 'https://speeki-mikechew.github.io/security-training-2026/'
+    },
+    cache: {
+      cacheLocation: 'sessionStorage',
+      storeAuthStateInCookie: false
+    }
+  };
+
+  let msalInstance = null;
+
+  async function initMsal() {
+    try {
+      msalInstance = new msal.PublicClientApplication(msalConfig);
+      await msalInstance.initialize();
+      // Handle redirect response if returning from login
+      await msalInstance.handleRedirectPromise();
+    } catch (e) {
+      console.error('MSAL init failed:', e);
+    }
+  }
+
+  async function signIn() {
+    if (!msalInstance) {
+      await initMsal();
+    }
+    if (!msalInstance) {
+      alert('Authentication system failed to load. Please refresh the page and try again.');
+      return;
+    }
+    try {
+      const loginResponse = await msalInstance.loginPopup({
+        scopes: ['User.Read']
+      });
+      const account = loginResponse.account;
+      userName = account.name || account.username;
+      userEmail = account.username;
+
+      // Update UI
+      document.getElementById('signInBtn').style.display = 'none';
+      document.getElementById('authWelcome').style.display = 'block';
+      document.getElementById('authUserName').textContent = userName;
+      document.getElementById('authUserEmail').textContent = userEmail;
+      document.getElementById('beginBtn').style.display = 'flex';
+    } catch (error) {
+      console.error('Login failed:', error);
+      if (error.errorCode === 'user_cancelled') return;
+      alert('Sign-in failed. Please ensure you are using your Speeki Microsoft account.');
+    }
+  }
+
+  // Check if already signed in
+  async function checkAuth() {
+    if (!msalInstance) {
+      await initMsal();
+    }
+    if (!msalInstance) return;
+    const accounts = msalInstance.getAllAccounts();
+    if (accounts.length > 0) {
+      const account = accounts[0];
+      userName = account.name || account.username;
+      userEmail = account.username;
+      document.getElementById('signInBtn').style.display = 'none';
+      document.getElementById('authWelcome').style.display = 'block';
+      document.getElementById('authUserName').textContent = userName;
+      document.getElementById('authUserEmail').textContent = userEmail;
+      document.getElementById('beginBtn').style.display = 'flex';
+    }
+  }
+
+  function startTraining() {
+    if (!userName || !userEmail) {
+      alert('Please sign in with your Microsoft account first.');
+      return;
+    }
+    goTo(1);
+  }
+
+  // ===== RENDER QUIZ =====
+  function renderQuiz() {
+    const c = document.getElementById('quizQuestions');
+    c.innerHTML = questions.map((q, i) => `
+      <div class="quiz-q" id="qq-${i}">
+        <h3><span class="q-num">${i+1}</span><span>${q.q}</span></h3>
+        <div class="q-opts">
+          ${q.opts.map((o, j) => `
+            <div class="q-opt" data-q="${i}" data-o="${j}" onclick="pickOpt(${i},${j})">
+              <div class="radio"></div>
+              <span>${o}</span>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function pickOpt(qi, oi) {
+    userAnswers[qi] = oi;
+    document.querySelectorAll(`[data-q="${qi}"]`).forEach(el => el.classList.remove('selected'));
+    document.querySelector(`[data-q="${qi}"][data-o="${oi}"]`).classList.add('selected');
+  }
+
+  function submitQuiz() {
+    if (Object.keys(userAnswers).length < questions.length) {
+      for (let i = 0; i < questions.length; i++) {
+        if (userAnswers[i] === undefined) {
+          document.getElementById(`qq-${i}`).scrollIntoView({ behavior: 'smooth', block: 'center' });
+          alert(`Please answer question ${i+1} before submitting.`);
+          return;
+        }
+      }
+      return;
+    }
+
+    let score = 0;
+    questions.forEach((q, i) => {
+      const correctIdx = q.a;
+      document.querySelectorAll(`[data-q="${i}"]`).forEach(el => { el.style.pointerEvents = 'none'; });
+      if (userAnswers[i] === correctIdx) {
+        score++;
+        document.querySelector(`[data-q="${i}"][data-o="${correctIdx}"]`).classList.add('correct');
+      } else {
+        document.querySelector(`[data-q="${i}"][data-o="${userAnswers[i]}"]`).classList.add('wrong');
+        document.querySelector(`[data-q="${i}"][data-o="${correctIdx}"]`).classList.add('correct');
+      }
+    });
+
+    document.getElementById('submitQuiz').style.display = 'none';
+
+    const passed = score >= PASS_THRESHOLD;
+    const now = new Date();
+    const dateStr = now.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+    const timeStr = now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+
+    const rc = document.getElementById('resultsCard');
+    rc.innerHTML = `
+      <div style="margin-bottom:16px;">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="${passed ? 'var(--success)' : 'var(--danger)'}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          ${passed ? '<path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>' : '<circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/>'}
+        </svg>
+      </div>
+      <div class="results-score">${score}/${questions.length}</div>
+      <div class="results-label">Correct Answers</div>
+      <div class="results-badge ${passed ? 'pass' : 'fail'}">${passed ? 'PASSED' : 'NOT PASSED — Review & Retry'}</div>
+      <p class="results-msg">${passed
+        ? 'You have successfully completed the Speeki Information Security Awareness Training for 2026.'
+        : 'You need at least 7 correct answers (70%) to pass. Please review the training content and try again.'}</p>
+      ${passed ? `
+        <div class="cert-box" style="text-align:center; padding:28px;">
+          <div style="display:flex; align-items:center; justify-content:center; gap:8px; margin-bottom:16px;">
+            <img src="data:image/png;base64,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" alt="Speeki" style="height:24px;width:auto;margin-right:8px;">
+            <span style="font-family:var(--font-display); font-size:20px; color:var(--text-primary);">Certificate of Completion</span>
+          </div>
+          <div style="border-top:1px solid var(--border); border-bottom:1px solid var(--border); padding:16px 0; margin:12px 0; text-align:left; display:inline-block; min-width:320px;">
+            <table style="font-size:13.5px; color:var(--text-secondary); line-height:2; border-collapse:collapse;">
+              <tr><td style="font-weight:700; color:var(--text-primary); padding-right:16px;">Name</td><td>${userName}</td></tr>
+              <tr><td style="font-weight:700; color:var(--text-primary); padding-right:16px;">Email</td><td>${userEmail}</td></tr>
+              <tr><td style="font-weight:700; color:var(--text-primary); padding-right:16px;">Date</td><td>${dateStr} at ${timeStr}</td></tr>
+              <tr><td style="font-weight:700; color:var(--text-primary); padding-right:16px;">Score</td><td>${score}/${questions.length} (${score*10}%)</td></tr>
+              <tr><td style="font-weight:700; color:var(--text-primary); padding-right:16px;">Training</td><td>Information Security Awareness 2026 (incl. AI Security)</td></tr>
+              <tr><td style="font-weight:700; color:var(--text-primary); padding-right:16px;">Standard</td><td>ISO 27001:2022 — Annex A Control A.6.3</td></tr>
+              <tr><td style="font-weight:700; color:var(--text-primary); padding-right:16px;">Status</td><td style="color:var(--success); font-weight:600;">Complete</td></tr>
+            </table>
+          </div>
+          <p style="font-size:12px; color:var(--text-tertiary); margin-top:12px; line-height:1.5;">
+            Screenshot or print this certificate and upload to <strong>Vanta</strong> (app.vanta.com/onboarding)<br>as evidence of completed security awareness training.
+          </p>
+        </div>
+      ` : ''}
+    `;
+
+    const rn = document.getElementById('resultsNav');
+    rn.innerHTML = passed
+      ? `<div></div><div class="nav-counter">Complete</div><button class="btn btn-primary" onclick="window.print()"><svg><use href="#i-clipboard"/></svg> Print Certificate</button>`
+      : `<button class="btn btn-ghost" onclick="retryQuiz()"><svg><use href="#i-arrow-left"/></svg> Review Content</button><div class="nav-counter">Incomplete</div><button class="btn btn-primary" onclick="retryQuiz()">Try Again <svg><use href="#i-arrow-right"/></svg></button>`;
+
+    goTo(9);
+  }
+
+  function retryQuiz() {
+    userAnswers = {};
+    renderQuiz();
+    document.getElementById('submitQuiz').style.display = 'flex';
+    goTo(1);
+  }
+
+  // ===== NAVIGATION =====
+  function goTo(n) {
+    document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
+    document.querySelector(`[data-slide="${n}"]`).classList.add('active');
+    currentSlide = n;
+    updateProgress();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function updateProgress() {
+    const pct = (currentSlide / (TOTAL_SLIDES - 1)) * 100;
+    document.getElementById('progressBar').style.width = pct + '%';
+  }
+
+  // ===== INIT =====
+  document.addEventListener('DOMContentLoaded', function() {
+    renderQuiz();
+    updateProgress();
+    checkAuth();
+  });
+</script>
+</body>
+</html>
