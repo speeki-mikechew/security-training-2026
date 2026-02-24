@@ -1031,11 +1031,10 @@
 
   // ===== REGISTRATION =====
   // ===== MSAL CONFIG =====
-  // TODO: Replace these with your Entra ID App Registration values
   const msalConfig = {
     auth: {
-      clientId: 'b99d6b29-6c84-498c-8f75-65de3a75271e',           // Application (client) ID from Azure
-      authority: 'https://login.microsoftonline.com/f606610b-47ea-46e1-b63a-0a1d802ed892',  // Directory (tenant) ID
+      clientId: 'b99d6b29-6c84-498c-8f75-65de3a75271e',
+      authority: 'https://login.microsoftonline.com/f606610b-47ea-46e1-b63a-0a1d802ed892',
       redirectUri: 'https://speeki-mikechew.github.io/security-training-2026/'
     },
     cache: {
@@ -1044,9 +1043,27 @@
     }
   };
 
-  const msalInstance = new msal.PublicClientApplication(msalConfig);
+  let msalInstance = null;
+
+  async function initMsal() {
+    try {
+      msalInstance = new msal.PublicClientApplication(msalConfig);
+      await msalInstance.initialize();
+      // Handle redirect response if returning from login
+      await msalInstance.handleRedirectPromise();
+    } catch (e) {
+      console.error('MSAL init failed:', e);
+    }
+  }
 
   async function signIn() {
+    if (!msalInstance) {
+      await initMsal();
+    }
+    if (!msalInstance) {
+      alert('Authentication system failed to load. Please refresh the page and try again.');
+      return;
+    }
     try {
       const loginResponse = await msalInstance.loginPopup({
         scopes: ['User.Read']
@@ -1063,12 +1080,17 @@
       document.getElementById('beginBtn').style.display = 'flex';
     } catch (error) {
       console.error('Login failed:', error);
+      if (error.errorCode === 'user_cancelled') return;
       alert('Sign-in failed. Please ensure you are using your Speeki Microsoft account.');
     }
   }
 
-  // Check if already signed in (returning from redirect)
+  // Check if already signed in
   async function checkAuth() {
+    if (!msalInstance) {
+      await initMsal();
+    }
+    if (!msalInstance) return;
     const accounts = msalInstance.getAllAccounts();
     if (accounts.length > 0) {
       const account = accounts[0];
